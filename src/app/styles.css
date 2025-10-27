@@ -2,30 +2,65 @@
 /* light mode */
 .ribbon {
 
-    background-color: rgb(150, 249, 216);
+    background-color: rgb(82, 140, 121);
     color: white;
-    border: white solid 2px;
-    border-radius: 8px;
+    display: flex;
+
 }
 
 .ribbonImages {
     height: 150px;
     width: 150px;
     margin: 10px;
+    cursor: pointer;
+}
+
+.ribbonButton {
+    background-color: transparent;
+    padding: 10 px;
+    height: 150px;
+    width: 150px;
+    border: none;
+    font-size: larger;
+    cursor: pointer;
 }
 
 .content {
     margin: 20px;
     font-size: 18px;
-    justify-content: center;
-    flex-direction: column;
     display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .mainImage {
-        height: 300px;
-        width: 300px;
-        margin: 10px;
+    height: 300px;
+    width: 300px;
+    margin: 10px;
+}
+
+.inputBox {
+    padding: 10px;
+    font-size: medium;
+    border-radius: 8px;
+    border: white solid 2px;
+    margin: 10px;
+    margin-bottom: 0px;
+    width: 300px;
+}
+
+.bigButton {
+    background-color: rgb(82, 140, 121);
+    color: white;
+    border: white solid 2px;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: larger;
+    cursor: pointer;
+    margin: 10px;
+    margin-bottom: 0px;
+    width: 250px;
 }
 
 /* dark mode */
