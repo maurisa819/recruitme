@@ -1,10 +1,19 @@
-import Image from "next/image";
+'use client'
+import React from "react";
+import Model from "./model";
 import "./styles.css";
 
 export default function Home() {
 
-  
+  const [model, setModel] = React.useState(new Model([], [], [], []));
+  const [redraw, forceRedraw] = React.useState(0);
 
+  React.useEffect(() => {
+  }, [model, redraw])
+
+  function updateDisplay() {
+    forceRedraw(redraw + 1);
+  }
 
 
   return (
