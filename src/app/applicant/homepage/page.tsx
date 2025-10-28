@@ -1,8 +1,18 @@
+"use client";
 import Image from "next/image";
 import "./styles.css";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 
 export default function ApplicantHome() {
+    const router = useRouter();
+
+    const goToApplicantHome = () => router.push("/applicant/homepage");
+    const goToEditApplicant = () => router.push("/applicant/edit");
+    const goToSearchJobs = () => router.push("/applicant/search");
+    const goToReviewJobs = () => router.push("/applicant/review");
+    
   return (
     <div>
       {/* Ribbon */}
@@ -10,13 +20,13 @@ export default function ApplicantHome() {
 
           <img className="ribbonImages" src="../recruitme.png" alt="RecruitMe Logo"></img>
 
-          <button className="ribbonButton">Home page</button>
+          <button onClick={goToApplicantHome} className="ribbonButton">Home page</button>
 
-          <button className="ribbonButton">Apply to Jobs</button>
+          <button onClick={goToSearchJobs} className="ribbonButton">Apply to Jobs</button>
 
-          <button className="ribbonButton">Review Profile</button>
+          <button onClick={goToEditApplicant} className="ribbonButton">Edit Profile</button>
 
-          <button className="ribbonButton">Review Jobs</button>
+          <button onClick={goToReviewJobs} className="ribbonButton">Review Jobs</button>
 
         </div>
         {/* Applicant name + skills */}
