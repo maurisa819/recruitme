@@ -2,6 +2,7 @@
 import React from "react";
 import Model from "./model";
 import "./styles.css";
+const axios = require('axios').default;
 
 export default function Home() {
 
@@ -15,6 +16,21 @@ export default function Home() {
     forceRedraw(redraw + 1);
   }
 
+  function testLambda() {
+    axios.post("https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/connectiontest", {
+        
+        "key1": "Hey! It worked!",
+        "key2": "value2",
+        "key3": "value3"
+
+      }).then(function (response : any) {
+      const textToChange = document.getElementById("changeText") as HTMLElement;
+      textToChange.innerText = JSON.stringify(response.data);
+      console.log(response);
+    }).catch(function (error : any) {
+      console.log(error);
+    });
+  }
 
   return (
     <div>
@@ -36,7 +52,8 @@ export default function Home() {
           <button className="bigButton">Login</button>
           <button className="bigButton">Register Account</button>
 
-
+          <button id="lambdaTestButton" className="bigButton" onClick={(e) => testLambda()}>Test Lambda Function</button>
+          <div id="changeText">This should change!</div>
 
         </div>
     </div>
