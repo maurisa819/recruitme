@@ -43,7 +43,9 @@ export default function CompanyRegister() {
           id="password"
         />
 
-        <button className="bigButton"> Register Company </button>
+        {/* For now I have the register company button going straight to the login page, but it should route them there after checking for valid registration once implemented */}
+        <button className="bigButton" onClick={goToCompanyLogin}> Register Company </button>
+        <button className="bigButton" onClick={goToCompanyLogin}> Login to Existing Company </button>
       </div>
     </div>
 

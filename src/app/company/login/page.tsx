@@ -36,8 +36,11 @@ export default function CompanyLogin() {
                     id="password"
                 />
 
+                {/* Company login will eventually check for valid login info before sending to home page*/}
                 <button className="bigButton"
                 onClick={goToCompanyHome}> Login! </button>
+                <button className="bigButton"
+                onClick={goToCompanyRegister}> Register Here </button>
             </div>
         </div>
     )
