@@ -5,11 +5,11 @@ import Offer from './offer';
 
 class Model {
 
-    applicants: Array<Applicant>;
-    companies: Array<Company>;
-    applications: Array<Application>;
-    offers: Array<Offer>;
-    adminPassword: string = "admin123";
+    applicants: Array<Applicant>; // List of applicants
+    companies: Array<Company>; // List of companies
+    applications: Array<Application>; // List of applications
+    offers: Array<Offer>; // List of offers
+    adminPassword: string = "admin123"; // Admin password
 
 
 
