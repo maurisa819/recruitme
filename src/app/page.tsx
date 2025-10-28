@@ -1,5 +1,6 @@
 import Image from "next/image";
 import "./styles.css";
+import Link from "next/link";
 
 export default function Home() {
 
@@ -12,9 +13,9 @@ export default function Home() {
         <div className="ribbon">
 
           <img className="ribbonImages" src="../recruitme.png" alt="RecruitMe Logo"></img>
-
-          <button className="ribbonButton">Company? Click here!</button>
-
+          <Link href="company/register">
+            <button className="ribbonButton"> Company? Click here! </button>
+          </Link>
         </div>
 
         <div className="content">
