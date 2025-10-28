@@ -13,7 +13,7 @@ export default function Home() {
         <div className="ribbon">
 
           <img className="ribbonImages" src="../recruitme.png" alt="RecruitMe Logo"></img>
-          <Link href="company/register">
+          <Link href="company/login">
             <button className="ribbonButton"> Company? Click here! </button>
           </Link>
         </div>
