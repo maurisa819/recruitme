@@ -5,6 +5,7 @@ import Model from "../../model";
 import "../../styles.css";
 const axios = require('axios').default;
 
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const apiUrl = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/";
@@ -14,6 +15,9 @@ export default function Home() {
   const [password, setPassword] = React.useState(""); // holds changes to the password
   const [name, setName] = React.useState(""); // holds changes to the name
   const [skills, setSkills] = React.useState(""); // holds changes to the skills
+
+  const router = useRouter();
+  const goToHome = () => router.push('/');
 
   React.useEffect(() => {
   }, [model, redraw])
@@ -41,7 +45,7 @@ export default function Home() {
     <div>
         <div className="ribbon">
 
-          <img className="ribbonImages" src="../recruitme.png" alt="RecruitMe Logo"></img>
+          <img className="ribbonImages" src="../recruitme.png" alt="RecruitMe Logo" onClick={(e) => goToHome()}></img>
 
           <button className="ribbonButton">Company? Click here!</button>
 
@@ -50,7 +54,7 @@ export default function Home() {
         <div className="content">
         
         
-          <img className="mainImage" src="../recruitme.png" alt="RecruitMe Logo"></img>
+          <img className="mainImage" src="../recruitme.png" alt="RecruitMe Logo" onClick={(e) => goToHome()}></img>
         
           <input className="inputBox" placeholder="Name" id="name" value={name} onChange={(e) => setName(e.target.value)}></input>
           <input className="inputBox" placeholder="Username" id="username" value={username} onChange={(e) => setUsername(e.target.value)}></input>

@@ -14,6 +14,7 @@ export default function Home() {
 
   const router = useRouter();
   const goToRegisterApplicant = () => router.push('/applicant/register');
+  const goToHome = () => router.push('/');
 
   React.useEffect(() => {
   }, [model, redraw])
@@ -55,7 +56,7 @@ export default function Home() {
     <div>
         <div className="ribbon">
 
-          <img className="ribbonImages" src="../recruitme.png" alt="RecruitMe Logo"></img>
+          <img className="ribbonImages" src="../recruitme.png" alt="RecruitMe Logo" onClick={(e) => goToHome()}></img>
 
           <button className="ribbonButton">Company? Click here!</button>
 
@@ -64,7 +65,7 @@ export default function Home() {
         <div className="content">
         
         
-          <img className="mainImage" src="../recruitme.png" alt="RecruitMe Logo"></img>
+          <img className="mainImage" src="../recruitme.png" alt="RecruitMe Logo" onClick={(e) => goToHome()}></img>
         
           <input className="inputBox" placeholder="Username" id="username" value={username} onChange={(e) => setUsername(e.target.value)}></input>
           <input className="inputBox" placeholder="Password" id="password" value={password} onChange={(e) => setPassword(e.target.value)}></input>
