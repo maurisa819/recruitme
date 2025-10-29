@@ -39,6 +39,11 @@ export default function Home() {
     });
   }
 
+  function logout() {
+    localStorage.removeItem('userId');
+    goToHome();
+  }
+
   function registerApplicant(username: string, password: string) {
     axios.post(apiUrl + "registerApplicant", {
         
@@ -59,6 +64,8 @@ export default function Home() {
           <img className="ribbonImages" src="../recruitme.png" alt="RecruitMe Logo" onClick={(e) => goToHome()}></img>
 
           <button className="ribbonButton">Company? Click here!</button>
+
+          <button className="ribbonButton" onClick={(e) => logout()}>Logout</button>
 
         </div>
 
