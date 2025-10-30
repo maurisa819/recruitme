@@ -68,10 +68,6 @@ export default function Home() {
 
           <button className="ribbonButton" onClick={(e) => logout()}>Logout</button>
 
-          <img className="ribbonImages" src="../recruitme.png" alt="RecruitMe Logo"></img>
-          <Link href="company/login">
-            <button className="ribbonButton"> Company? Click here! </button>
-          </Link>
         </div>
 
         <div className="content">
