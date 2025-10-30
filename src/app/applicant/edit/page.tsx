@@ -4,6 +4,23 @@ import "./styles.css";
 import { useRouter } from "next/navigation";
 import React from "react";
 
+const applicantID = localStorage.getItem("userId");
+
+fetch('https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/updateApplicant', {
+    method: 'POST', 
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      id: applicantID,
+      applicantName: "applicantName",
+      applicantSkills: "applicantSkills",
+      applicantDescription: "applicantDescription"
+    })
+  })
+    .then(res => res.json())
+    .then(data => console.log("Update data:", data))
+    .catch(err => console.error(err));
 
 export default function ApplicantHome() {
     const router = useRouter();
@@ -12,7 +29,7 @@ export default function ApplicantHome() {
     const goToEditApplicant = () => router.push("/applicant/edit");
     const goToSearchJobs = () => router.push("/applicant/search");
     const goToReviewJobs = () => router.push("/applicant/review");
-  
+
   return (
     <div>
       {/* Ribbon */}
