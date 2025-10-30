@@ -2,7 +2,7 @@
 import Image from "next/image";
 import "./styles.css";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, {useEffect, useState} from "react";
 
 
 export default function ApplicantHome() {
@@ -13,6 +13,24 @@ export default function ApplicantHome() {
     const goToSearchJobs = () => router.push("/applicant/search");
     const goToReviewJobs = () => router.push("/applicant/review");
     
+    const [applicantName, setApplicantName] = React.useState("");
+
+    useEffect(() => {
+    const applicantID = localStorage.getItem("userId");
+    //console.log("Applicant ID is ", applicantID);
+
+    if (applicantID) {
+      fetch(`https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/reviewApplicant?applicantID=${applicantID}`)
+        .then(res => res.json())
+        .then(data => {
+          //console.log("Applicant data:", data);
+          if (data.length > 0) {
+            setApplicantName(data[0].ApplicantName);
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  }, []);
   return (
     <div>
       {/* Ribbon */}
@@ -30,7 +48,7 @@ export default function ApplicantHome() {
 
         </div>
         {/* Applicant name + skills */}
-      <h1>Applicant Name</h1>
+      <h1>{applicantName}</h1>
       <br></br>
       <ol>Top 5 Skills:
           <li>1. Skill</li>
