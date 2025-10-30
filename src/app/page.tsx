@@ -18,6 +18,7 @@ export default function Home() {
   const goToRegisterApplicant = () => router.push('/applicant/register');
   const goToHome = () => router.push('/');
   const goToApplicantHome = () => router.push('/applicant/homepage');
+  const goToCompanyLogin = () => router.push('/company/login')
 
   React.useEffect(() => {
   }, [model, redraw])
@@ -81,7 +82,7 @@ export default function Home() {
 
           <img className="ribbonImages" src="../recruitme.png" alt="RecruitMe Logo" onClick={(e) => goToHome()}></img>
 
-          <button className="ribbonButton">Company? Click here!</button>
+          <button className="ribbonButton" onClick={goToCompanyLogin}>Company? Click here!</button>
 
           <button className="ribbonButton" onClick={(e) => logout()}>Logout</button>
 

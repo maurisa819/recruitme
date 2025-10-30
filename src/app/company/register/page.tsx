@@ -21,7 +21,8 @@ export default function CompanyRegister() {
     
     const goToCompanyRegister = () => router.push("/company/register");
     const goToCompanyLogin = () => router.push("/company/login");
-    
+    const goToApplicantLogin = () => router.push("/")
+
     function logout() {
       localStorage.removeItem('companyID');
       goToCompanyLogin();
@@ -62,7 +63,7 @@ export default function CompanyRegister() {
             className="ribbonImages"
             src="/recruitme.png"
             alt="RecruitMe Logo"
-            onClick={goToCompanyLogin}
+            onClick={goToApplicantLogin}
           />
         </div>
         <div className="content">

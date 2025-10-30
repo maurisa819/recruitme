@@ -10,6 +10,7 @@ export default function CompanyLogin() {
     const goToCompanyLogin = () => router.push("/company/login");
     const goToCompanyRegister = () => router.push("/company/register")
     const goToCompanyHome = () => router.push("/company/home")
+    const goToApplicantLogin = () => router.push("/")
     
     return(
         <div>
@@ -18,7 +19,7 @@ export default function CompanyLogin() {
                     className="ribbonImages"
                     src="/recruitme.png"
                     alt="RecruitMe Logo"
-                    onClick={goToCompanyRegister}
+                    onClick={goToApplicantLogin}
                 />
             </div>
 
