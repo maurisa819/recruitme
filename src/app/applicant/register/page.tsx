@@ -44,7 +44,10 @@ export default function Home() {
       }).then(function (response : any) {
       console.log(response);
       console.log(response.data.body);
+      // store userID in local storage
       localStorage.setItem('userId', response.data.body);
+      // redirect to applicant homepage
+      router.push('/applicant/homepage');
     }).catch(function (error : any) {
       console.log(error);
     });

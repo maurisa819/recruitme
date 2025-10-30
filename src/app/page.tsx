@@ -11,10 +11,12 @@ export default function Home() {
   const [redraw, forceRedraw] = React.useState(0);
   const [username, setUsername] = React.useState(""); // holds changes to the username
   const [password, setPassword] = React.useState(""); // holds changes to the password
+  const [userID, setUserID] = React.useState(-1); // holds the userID once logged in
 
   const router = useRouter();
   const goToRegisterApplicant = () => router.push('/applicant/register');
   const goToHome = () => router.push('/');
+  const goToApplicantHome = () => router.push('/applicant/homepage');
 
   React.useEffect(() => {
   }, [model, redraw])
@@ -44,18 +46,33 @@ export default function Home() {
     goToHome();
   }
 
-  function registerApplicant(username: string, password: string) {
-    axios.post(apiUrl + "registerApplicant", {
-        
+  function loginApplicant() {
+    axios.post(apiUrl + "applicant/login", {
         "username": username,
         "password": password
-
       }).then(function (response : any) {
-      console.log(response);
-    }).catch(function (error : any) {
-      console.log(error);
-    });
+        console.log(response);
+        console.log(response.data.body);
+        setUserID(response.data.body);
+        localStorage.setItem('userId', response.data.body);
+        goToApplicantHome();
+      }).catch(function (error : any) {
+        console.log(error);
+      });
   }
+
+  // check if user is logged in
+  React.useEffect(() => {
+    let applicantID;
+    if (typeof window !== 'undefined' && window.localStorage) {
+      applicantID = localStorage.getItem("userId");
+      if (applicantID) {
+        // if logged in, go to applicant homepage
+        goToApplicantHome();
+      }
+    }
+  }, []);
+
 
   return (
     <div>
@@ -76,7 +93,7 @@ export default function Home() {
         
           <input className="inputBox" placeholder="Username" id="username" value={username} onChange={(e) => setUsername(e.target.value)}></input>
           <input className="inputBox" placeholder="Password" id="password" value={password} onChange={(e) => setPassword(e.target.value)}></input>
-          <button className="bigButton">Login</button>
+          <button className="bigButton" onClick={(e) => loginApplicant()}>Login</button>
           <button className="bigButton" onClick={(e) => goToRegisterApplicant()}>Register Account</button>
 
           <button id="lambdaTestButton" className="bigButton" onClick={(e) => testLambda()}>Test Lambda Function</button>
