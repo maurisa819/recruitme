@@ -1,10 +1,12 @@
 'use client'
 import React from "react";
-import Model from "./model";
-import "./styles.css";
+import Model from "../../model";
+import { useEffect } from "react";
+
+import "../../styles.css";
 const axios = require('axios').default;
+
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 export default function Home() {
   const apiUrl = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/";
@@ -12,9 +14,11 @@ export default function Home() {
   const [redraw, forceRedraw] = React.useState(0);
   const [username, setUsername] = React.useState(""); // holds changes to the username
   const [password, setPassword] = React.useState(""); // holds changes to the password
+  const [name, setName] = React.useState(""); // holds changes to the name
+  const [skills, setSkills] = React.useState(""); // holds changes to the skills
+  const [userID, setUserID] = React.useState(-1); // holds the userID once registered
 
   const router = useRouter();
-  const goToRegisterApplicant = () => router.push('/applicant/register');
   const goToHome = () => router.push('/');
 
   React.useEffect(() => {
@@ -24,39 +28,37 @@ export default function Home() {
     forceRedraw(redraw + 1);
   }
 
-  function testLambda() { // just a test function to see if i could connect to the lambda
-    axios.post(apiUrl + "connectiontest", {
-        
-        "key1": "Hey! It worked!",
-        "key2": "value2",
-        "key3": "value3"
-
-      }).then(function (response : any) {
-      const textToChange = document.getElementById("changeText") as HTMLElement;
-      textToChange.innerText = JSON.stringify(response.data);
-      console.log(response);
-    }).catch(function (error : any) {
-      console.log(error);
-    });
-  }
-
   function logout() {
     localStorage.removeItem('userId');
     goToHome();
   }
 
-  function registerApplicant(username: string, password: string) {
-    axios.post(apiUrl + "registerApplicant", {
+  function registerApplicant(username: string, password: string, name: string, skills: string) {
+    axios.post(apiUrl + "applicant/register", {
         
         "username": username,
-        "password": password
+        "password": password,
+        "name": name,
+        "skills": skills
 
       }).then(function (response : any) {
       console.log(response);
+      console.log(response.data.body);
+      localStorage.setItem('userId', response.data.body);
     }).catch(function (error : any) {
       console.log(error);
     });
   }
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      let userID = localStorage.getItem('userId');
+    }
+    setUserID(userID);
+  }, 
+  []);
+
+
 
   return (
     <div>
@@ -68,10 +70,6 @@ export default function Home() {
 
           <button className="ribbonButton" onClick={(e) => logout()}>Logout</button>
 
-          <img className="ribbonImages" src="../recruitme.png" alt="RecruitMe Logo"></img>
-          <Link href="company/login">
-            <button className="ribbonButton"> Company? Click here! </button>
-          </Link>
         </div>
 
         <div className="content">
@@ -79,13 +77,11 @@ export default function Home() {
         
           <img className="mainImage" src="../recruitme.png" alt="RecruitMe Logo" onClick={(e) => goToHome()}></img>
         
+          <input className="inputBox" placeholder="Name" id="name" value={name} onChange={(e) => setName(e.target.value)}></input>
           <input className="inputBox" placeholder="Username" id="username" value={username} onChange={(e) => setUsername(e.target.value)}></input>
           <input className="inputBox" placeholder="Password" id="password" value={password} onChange={(e) => setPassword(e.target.value)}></input>
-          <button className="bigButton">Login</button>
-          <button className="bigButton" onClick={(e) => goToRegisterApplicant()}>Register Account</button>
-
-          <button id="lambdaTestButton" className="bigButton" onClick={(e) => testLambda()}>Test Lambda Function</button>
-          <div id="changeText">This should change!</div>
+          <input className="inputBox" placeholder="Skills (comma separated)" id="skills" value={skills} onChange={(e) => setSkills(e.target.value)}></input>
+          <button className="bigButton" onClick={(e) => registerApplicant(username, password, name, skills)}>Register Account</button>
 
         </div>
     </div>
