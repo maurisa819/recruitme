@@ -10,6 +10,7 @@ export default function CompanyLogin() {
     const goToCompanyLogin = () => router.push("/company/login");
     const goToCompanyRegister = () => router.push("/company/register")
     const goToCompanyHome = () => router.push("/company/home")
+    
     return(
         <div>
             <div className="ribbon"> 
