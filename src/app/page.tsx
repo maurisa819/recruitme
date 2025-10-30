@@ -4,6 +4,7 @@ import Model from "./model";
 import "./styles.css";
 const axios = require('axios').default;
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Home() {
   const apiUrl = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/";
