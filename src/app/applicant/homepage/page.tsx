@@ -14,7 +14,8 @@ export default function ApplicantHome() {
     const goToReviewJobs = () => router.push("/applicant/review");
     
     const [applicantName, setApplicantName] = React.useState("");
-
+    const [applicantSkills, setApplicantSkills] = React.useState("");
+    const [applicantUserName, setApplicantUserName] = React.useState("");
     useEffect(() => {
     const applicantID = localStorage.getItem("userId");
     //console.log("Applicant ID is ", applicantID);
@@ -26,6 +27,8 @@ export default function ApplicantHome() {
           //console.log("Applicant data:", data);
           if (data.length > 0) {
             setApplicantName(data[0].ApplicantName);
+            setApplicantSkills(data[0].ApplicantSkills);
+            setApplicantUserName(data[0].ApplicantUsername);
           }
         })
         .catch(err => console.error(err));
@@ -50,13 +53,9 @@ export default function ApplicantHome() {
         {/* Applicant name + skills */}
       <h1>{applicantName}</h1>
       <br></br>
-      <ol>Top 5 Skills:
-          <li>1. Skill</li>
-          <li>2. Skill</li>
-          <li>3. Skill</li>
-          <li>4. Skill</li>
-          <li>5. Skill</li>
-        </ol>
+      <p>Username: {applicantUserName}</p>
+      <p>List of Skills: {applicantSkills}</p>
+      
 
         {/* Job Offers */}
       <section className="jobOffers">
