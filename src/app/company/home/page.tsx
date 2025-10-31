@@ -51,6 +51,7 @@ export default function CompanyHome() {
   return (
     <div className="company-home">
       <div className="ribbon">
+        <button className="ribbonButton" onClick={(e) => logout()}>Logout</button>
         <img
           className="ribbonImages"
           src="/recruitme.png"
