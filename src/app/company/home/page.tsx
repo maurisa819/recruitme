@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 import "../styles.css";
 
 export default function CompanyHome() {
@@ -10,16 +11,42 @@ export default function CompanyHome() {
   const goToCompanyHome = () => router.push("/company/home");
   const goToReviewProfile = () => router.push("/company/review");
   const goToReviewApplicant = () => router.push("/company/applicants");
+  const goToLogin = () => router.push("/company/login");
+  const goToCreateJobs = () => router.push("/company/createJob");
 
-  const openJobs = [
-    { title: "Software Engineer", applicants: 10 },
-    { title: "QA Tester", applicants: 5 },
-  ];
+  const logout = () => {
+    localStorage.removeItem("companyID");
+    goToLogin();
+  };
 
-  const closedJobs = [
-    { title: "Project Manager", hired: 1 },
-    { title: "Designer", hired: 2 },
-  ];
+  const [companyName, setCompanyName] = useState("Company");
+  const [openJobs, setOpenJobs] = useState([]);
+  const [closedJobs, setClosedJobs] = useState([]);
+
+  useEffect(() => {
+    const companyID = localStorage.getItem("companyID") || "1";
+
+    const url = `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/reviewCompany?companyID=${companyID}`;
+
+    axios
+      .get(url)
+      .then(function (response: any) {
+        console.log("Backend response:", response);
+        console.log("Response body:", response.data.body);
+
+        const data = response.data.body
+          ? JSON.parse(response.data.body)
+          : response.data;
+
+        setCompanyName(data.companyName);
+        setOpenJobs(data.jobs?.openJobs || []);
+        setClosedJobs(data.jobs?.closedJobs || []);
+      })
+      .catch(function (error: any) {
+        console.log("Axios fetch error:", error);
+        alert("Unable to fetch company data. Please try again.");
+      });
+  }, []);
 
   return (
     <div className="company-home">
@@ -40,7 +67,7 @@ export default function CompanyHome() {
           <img
             className="icon-button"
             src="/person.png"
-            alt="Review Company Profile"
+            alt="Review Profile"
             onClick={goToReviewProfile}
           />
           <img
@@ -52,11 +79,9 @@ export default function CompanyHome() {
         </div>
       </div>
 
-      <div>
-        <h1 className="pageHeading" style={{ textAlign: "center" }}>
-          Company Home Page
-        </h1>
-      </div>
+      <h1 className="pageHeading" style={{ textAlign: "center" }}>
+        {companyName} Home Page
+      </h1>
 
       <div className="jobs-container">
         <div className="jobs-box">
@@ -72,13 +97,13 @@ export default function CompanyHome() {
               </tr>
             </thead>
             <tbody>
-              {openJobs.map((job, index) => (
-                <tr key={index}>
+              {openJobs.map((job, i) => (
+                <tr key={i}>
                   <td>{job.title}</td>
                   <td>
                     <button>Activate/Close</button>
                   </td>
-                  <td>{job.applicants}</td>
+                  <td>{job.applicants || 0}</td>
                   <td>
                     <button>Edit</button>
                   </td>
@@ -91,6 +116,7 @@ export default function CompanyHome() {
           </table>
         </div>
 
+        {/* Closed Jobs */}
         <div className="jobs-box">
           <h2>Closed Jobs</h2>
           <table className="jobs-table">
@@ -102,10 +128,10 @@ export default function CompanyHome() {
               </tr>
             </thead>
             <tbody>
-              {closedJobs.map((job, index) => (
-                <tr key={index}>
+              {closedJobs.map((job, i) => (
+                <tr key={i}>
                   <td>{job.title}</td>
-                  <td>{job.hired}</td>
+                  <td>{job.hired || 0}</td>
                   <td>
                     <button>Reopen</button>
                   </td>
@@ -116,8 +142,13 @@ export default function CompanyHome() {
         </div>
       </div>
 
-      <div>
-        <button className="bigButton">Create Job</button>
+      <div style={{ marginTop: "20px", textAlign: "center" }}>
+        <button className="bigButton" onClick={goToCreateJobs}>
+          Create Job
+        </button>
+        <button className="bigButton" onClick={logout}>
+          Logout
+        </button>
       </div>
     </div>
   );
