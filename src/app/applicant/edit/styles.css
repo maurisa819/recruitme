@@ -1,3 +1,42 @@
+/* Styling for the elements */
+h1{
+    font-size: 25px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input{
+    padding: 10px;
+    font-size: 20px;
+    margin: 10px auto;      
+    margin-bottom: 0px;
+    width: 400px;
+    display: block;
+}
+
+.title {
+    font-size: 45px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.saveButton {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin: 10px auto;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  width: 200px;
+  height: 50px;
+  font-size: 18px;
+
+}
+
 /* light mode */
 .ribbon {
 
@@ -127,70 +166,4 @@
         width: 250px;
     }
 
-}
-
-.applicant-home {
-  font-family: Arial, sans-serif;
-  padding: 20px;
-}
-
-
-/* Jobs */
-.jobOffers, .acceptedOffers {
-  margin-top: 30px;
-  padding: 20px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  background-color: #203830;
-  color: white;
-}
-
-.jobOfferCard, .acceptedOfferCard {
-  margin-bottom: 15px;
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #070505cc;
-  color: white;
-}
-
-.offerButtons {
-  margin-top: 10px;
-}
-
-.acceptButton {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  margin-right: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.rejectButton {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-
-/* Footer */
-footer {
-  background-color: rgb(82, 140, 121);  
-  color: white;               
-  padding: 30px 20px;           
-  margin-top: 60px;               
-  text-align: center;             
-  border-top: 3px solid #ccc;    
-}
-
-/* Wanted to get rid of the numbers in the list */
-footer ol {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
 }
