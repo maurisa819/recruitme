@@ -25,7 +25,6 @@ export default function CompanyHome() {
 
   useEffect(() => {
     const companyID = localStorage.getItem("companyID") || "1";
-
     const url = `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/reviewCompany?companyID=${companyID}`;
 
     axios
