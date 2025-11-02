@@ -22,9 +22,9 @@ export default function ReviewApplicants() {
     axios.post(apiUrl + "company/editJob", {
         
         "jobID": localStorage.getItem('jobID'),
-        "jobName": jobName,
-        "jobDescription": jobDesc,
-        "requirements": reqs
+        "JobTitle": jobName,
+        "JobDescription": jobDesc,
+        "RequiredSkills": reqs
 
       }).then(function (response : any) {
       console.log(response);
