@@ -84,21 +84,26 @@ export default function ApplicantHome() {
           <button onClick={goToReviewJobs} className="ribbonButton">Review Jobs</button>
 
         </div>
+        <div className="title">
+        <p> Edit Applicant Profile </p>
+        </div>
+        <br></br>
         {/* Want these to populate with the current values if possible */}
+        <br></br>
       <h1>Applicant Name</h1>
       <input type="text" value={applicantName} className="editInput" onChange={(e) => setApplicantName(e.target.value)}/>
-      <br></br>
+      <br></br><br></br><br></br>
 
       <h1>Applicant Username</h1>
       <input type="text" value={applicantUserName} className="editInput" onChange={(e) => setApplicantUserName(e.target.value)}/>
-      <br></br>
+      <br></br><br></br><br></br>
 
       <h1>Top 5 Job Skills: Enter skills with a comma seperated list</h1>
       <input type="text" value={applicantSkills} className="editInput" onChange={(e) => setApplicantSkills(e.target.value)}/>
-      <br></br>
+      <br></br><br></br>
 
       
-      <button onClick={handleSaveChanges} className="acceptButton">Save Changes</button>
+      <button onClick={handleSaveChanges} className="saveButton">Save Changes</button>
     </div>
   );
 }

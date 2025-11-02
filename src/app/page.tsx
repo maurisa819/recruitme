@@ -17,6 +17,7 @@ export default function Home() {
   const router = useRouter();
   const goToRegisterApplicant = () => router.push('/applicant/register');
   const goToHome = () => router.push('/');
+
   const goToApplicantHome = () => router.push('/applicant/homepage');
   const goToCompanyLogin = () => router.push('/company/login')
 
@@ -95,7 +96,9 @@ export default function Home() {
         
           <input className="inputBox" placeholder="Username" id="username" value={username} onChange={(e) => setUsername(e.target.value)}></input>
           <input className="inputBox" placeholder="Password" id="password" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+
           <button className="bigButton" onClick={(e) => loginApplicant()}>Login</button>
+
           <button className="bigButton" onClick={(e) => goToRegisterApplicant()}>Register Account</button>
 
           <button id="lambdaTestButton" className="bigButton" onClick={(e) => testLambda()}>Test Lambda Function</button>

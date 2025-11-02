@@ -50,12 +50,16 @@ export default function ApplicantHome() {
           <button onClick={goToReviewJobs} className="ribbonButton">Review Jobs</button>
 
         </div>
+        <div className="applicant-title">
+        <h1>Applicant Homepage</h1>
+        </div>
         {/* Applicant name + skills */}
-      <h1>{applicantName}</h1>
+      <div className="applicant-info">
+      <h1>Welcome {applicantName}!</h1>
       <br></br>
       <p>Username: {applicantUserName}</p>
       <p>List of Skills: {applicantSkills}</p>
-      
+      </div>
 
         {/* Job Offers */}
       <section className="jobOffers">
