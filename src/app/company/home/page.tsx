@@ -13,6 +13,7 @@ export default function CompanyHome() {
   const goToReviewApplicant = () => router.push("/company/applicants");
   const goToLogin = () => router.push("/company/login");
   const goToCreateJobs = () => router.push("/company/createJob");
+  const goToEditJob = () => router.push("/company/editJob")
 
   const logout = () => {
     localStorage.removeItem("companyID");
@@ -32,11 +33,12 @@ export default function CompanyHome() {
       .then(function (response: any) {
         console.log("Backend response:", response);
         console.log("Response body:", response.data.body);
-
+        
         const data = response.data.body
           ? JSON.parse(response.data.body)
           : response.data;
-
+        
+        console.log(data)
         setCompanyName(data.companyName);
         setOpenJobs(data.jobs?.openJobs || []);
         setClosedJobs(data.jobs?.closedJobs || []);
@@ -46,6 +48,8 @@ export default function CompanyHome() {
         alert("Unable to fetch company data. Please try again.");
       });
   }, []);
+
+  console.log(openJobs)
 
   return (
     <div className="company-home">
@@ -105,7 +109,10 @@ export default function CompanyHome() {
                   </td>
                   <td>{job.applicants || 0}</td>
                   <td>
-                    <button>Edit</button>
+                    <button onClick={() => {
+                      localStorage.setItem("jobID", job.id); // assuming job.id exists
+                      goToEditJob();
+                  }}>Edit</button>
                   </td>
                   <td>
                     <button>Review</button>
