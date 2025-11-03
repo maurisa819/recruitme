@@ -15,6 +15,13 @@ export default function ApplicantHome() {
     const goToEditApplicant = () => router.push("/applicant/edit");
     const goToSearchJobs = () => router.push("/applicant/search");
     const goToReviewJobs = () => router.push("/applicant/review");
+
+    const goToHome = () => router.push('/');
+    function logout() {
+      localStorage.removeItem('userId');
+      goToHome();
+    }
+
     //console.log("Applicant ID in edit page is ", applicantID);
     
     let applicantID: string | null = null;
@@ -90,6 +97,8 @@ export default function ApplicantHome() {
           <button onClick={goToEditApplicant} className="ribbonButton">Edit Profile</button>
 
           <button onClick={goToReviewJobs} className="ribbonButton">Review Jobs</button>
+
+          <button className="ribbonButton" onClick={(e) => logout()}>Logout</button>
 
         </div>
         <div className="title">
