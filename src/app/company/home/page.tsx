@@ -21,8 +21,8 @@ export default function CompanyHome() {
   };
 
   const [companyName, setCompanyName] = useState("Company");
-  const [openJobs, setOpenJobs] = useState([]);
-  const [closedJobs, setClosedJobs] = useState([]);
+  const [openJobs, setOpenJobs] = useState(Array<any>);
+  const [closedJobs, setClosedJobs] = useState(Array<any>);
 
   useEffect(() => {
     const companyID = localStorage.getItem("companyID") || "1";
@@ -40,8 +40,10 @@ export default function CompanyHome() {
         
         console.log(data)
         setCompanyName(data.companyName);
-        setOpenJobs(data.jobs?.openJobs || []);
-        setClosedJobs(data.jobs?.closedJobs || []);
+        if (data.jobs) {
+          setOpenJobs(data.jobs.openJobs);
+          setClosedJobs(data.jobs.closedJobs);
+        }
       })
       .catch(function (error: any) {
         console.log("Axios fetch error:", error);

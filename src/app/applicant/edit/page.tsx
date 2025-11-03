@@ -15,9 +15,28 @@ export default function ApplicantHome() {
     const goToEditApplicant = () => router.push("/applicant/edit");
     const goToSearchJobs = () => router.push("/applicant/search");
     const goToReviewJobs = () => router.push("/applicant/review");
-    const applicantID = localStorage.getItem("userId");
+    const [ApplicantID, setApplicantID] = useState<string | null>(null);
+
+    const goToHome = () => router.push('/');
+    function logout() {
+      localStorage.removeItem('userId');
+      goToHome();
+    }
+
     //console.log("Applicant ID in edit page is ", applicantID);
     
+    
+
+    useEffect(() => {
+      const storeId = localStorage.getItem("userId");
+      if (!storeId) {
+        router.push("/applicant/login");
+      }
+      else {
+        setApplicantID(storeId);
+      }
+    }, [router]);
+
     const [applicantName, setApplicantName] = React.useState("");
     const [applicantSkills, setApplicantSkills] = React.useState("");
     const [applicantUserName, setApplicantUserName] = React.useState("");
@@ -25,8 +44,8 @@ export default function ApplicantHome() {
     //const applicantID = localStorage.getItem("userId");
     //console.log("Applicant ID is ", applicantID);
 
-    if (applicantID) {
-      fetch(`https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/reviewApplicant?applicantID=${applicantID}`)
+    if (!ApplicantID) return; 
+    fetch(`https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/reviewApplicant?applicantID=${ApplicantID}`)
         .then(res => res.json())
         .then(data => {
           //console.log("Applicant data:", data);
@@ -37,15 +56,14 @@ export default function ApplicantHome() {
           }
         })
         .catch(err => console.error(err));
-    }
-  }, []);
-
+    }, [ApplicantID]);
+    
   const handleSaveChanges = async () => {
     try {
       const response = await axios.post(
   'https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/reviewApplicant',
   {
-    ApplicantID: applicantID,
+    ApplicantID,
     ApplicantName: applicantName,
     ApplicantSkills: applicantSkills,
     ApplicantUsername: applicantUserName
@@ -82,6 +100,8 @@ export default function ApplicantHome() {
           <button onClick={goToEditApplicant} className="ribbonButton">Edit Profile</button>
 
           <button onClick={goToReviewJobs} className="ribbonButton">Review Jobs</button>
+
+          <button className="ribbonButton" onClick={(e) => logout()}>Logout</button>
 
         </div>
         <div className="title">

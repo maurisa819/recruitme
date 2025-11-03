@@ -56,6 +56,13 @@ export default function Home() {
       }).then(function (response : any) {
         console.log(response);
         console.log(response.data.body);
+        let data = JSON.parse(response.data.body);
+
+        if (data == "Username does not exist." || data == "Incorrect password.") {
+          alert(data);
+          return;
+        }
+
         setUserID(response.data.body);
         localStorage.setItem('userId', response.data.body);
         goToApplicantHome();

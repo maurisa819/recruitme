@@ -12,10 +12,17 @@ export default function ApplicantHome() {
     const goToEditApplicant = () => router.push("/applicant/edit");
     const goToSearchJobs = () => router.push("/applicant/search");
     const goToReviewJobs = () => router.push("/applicant/review");
+    const goToHome = () => router.push('/');
     
     const [applicantName, setApplicantName] = React.useState("");
     const [applicantSkills, setApplicantSkills] = React.useState("");
     const [applicantUserName, setApplicantUserName] = React.useState("");
+
+    function logout() {
+      localStorage.removeItem('userId');
+      goToHome();
+    }
+
     useEffect(() => {
     const applicantID = localStorage.getItem("userId");
     //console.log("Applicant ID is ", applicantID);
@@ -48,6 +55,8 @@ export default function ApplicantHome() {
           <button onClick={goToEditApplicant} className="ribbonButton">Edit Profile</button>
 
           <button onClick={goToReviewJobs} className="ribbonButton">Review Jobs</button>
+
+          <button className="ribbonButton" onClick={(e) => logout()}>Logout</button>
 
         </div>
         <div className="applicant-title">
