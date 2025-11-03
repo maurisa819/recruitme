@@ -15,9 +15,17 @@ export default function ApplicantHome() {
     const goToEditApplicant = () => router.push("/applicant/edit");
     const goToSearchJobs = () => router.push("/applicant/search");
     const goToReviewJobs = () => router.push("/applicant/review");
-    const applicantID = localStorage.getItem("userId");
     //console.log("Applicant ID in edit page is ", applicantID);
     
+    let applicantID: string | null = null;
+
+    useEffect(() => {
+      applicantID = localStorage.getItem("userId");
+      if (!applicantID) {
+        router.push("/applicant/login");
+      }
+    }, []);
+
     const [applicantName, setApplicantName] = React.useState("");
     const [applicantSkills, setApplicantSkills] = React.useState("");
     const [applicantUserName, setApplicantUserName] = React.useState("");
