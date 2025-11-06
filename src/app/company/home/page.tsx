@@ -24,34 +24,59 @@ export default function CompanyHome() {
   const [openJobs, setOpenJobs] = useState(Array<any>);
   const [closedJobs, setClosedJobs] = useState(Array<any>);
 
+  let companyID = "0";
   useEffect(() => {
-    const companyID = localStorage.getItem("companyID") || "1";
-    const url = `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/reviewCompany?companyID=${companyID}`;
+  companyID = localStorage.getItem("companyID") || "1";
+  const url = `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/reviewCompany?companyID=${companyID}`;
 
-    axios
-      .get(url)
-      .then(function (response: any) {
-        console.log("Backend response:", response);
-        console.log("Response body:", response.data.body);
-        
-        const data = response.data.body
-          ? JSON.parse(response.data.body)
-          : response.data;
-        
-        console.log(data)
-        setCompanyName(data.companyName);
-        if (data.jobs) {
-          setOpenJobs(data.jobs.openJobs);
-          setClosedJobs(data.jobs.closedJobs);
-        }
-      })
-      .catch(function (error: any) {
-        console.log("Axios fetch error:", error);
-        alert("Unable to fetch company data. Please try again.");
-      });
+  axios
+    .get(url)
+    .then(function (response: any) {
+      console.log("Backend response:", response);
+      console.log("Response body:", response.data.body);
+      
+      const data = response.data.body
+        ? JSON.parse(response.data.body)
+        : response.data;
+      
+      console.log(data)
+      setCompanyName(data.companyName);
+      if (data.jobs) {
+        setOpenJobs(data.jobs.openJobs);
+        setClosedJobs(data.jobs.closedJobs);
+      }
+    })
+    .catch(function (error: any) {
+      console.log("Axios fetch error:", error);
+      alert("Unable to fetch company data. Please try again.");
+    });
   }, []);
 
   console.log(openJobs)
+
+  function activateJob(jID: string) {
+
+    axios.post('https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/activateJob', {
+      jobID: jID
+    }).then(function (response) {
+      console.log("Job activated:", response);
+      let updatedJobs = openJobs;
+      for (let i = 0; i < openJobs.length; i++) {
+        if (updatedJobs[i].id === jID) {
+          if (updatedJobs[i].status === "Inactive") {
+            updatedJobs[i].status = "Active";
+          }
+          break;
+        }
+      }
+      setOpenJobs([...updatedJobs]);
+    }).catch(function (error) {
+      console.log("Error activating job:", error);
+      alert("Unable to activate job. Please try again.");
+    });
+
+  }
+
 
   return (
     <div className="company-home">
@@ -97,6 +122,7 @@ export default function CompanyHome() {
               <tr>
                 <th>Job</th>
                 <th>Activate/Close</th>
+                <th>Status</th>
                 <th># Applicants</th>
                 <th>Edit</th>
                 <th>Review Applicants</th>
@@ -106,9 +132,10 @@ export default function CompanyHome() {
               {openJobs.map((job, i) => (
                 <tr key={i}>
                   <td>{job.title}</td>
-                  <td>
+                  <td onClick={(e) => activateJob(job.id)}>
                     <button>Activate/Close</button>
                   </td>
+                  <td>{job.status}</td>
                   <td>{job.applicants || 0}</td>
                   <td>
                     <button onClick={() => {
