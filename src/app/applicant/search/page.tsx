@@ -2,7 +2,6 @@
 import Image from "next/image";
 import "./styles.css";
 import { useRouter } from "next/navigation";
-import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -13,7 +12,11 @@ import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import axios from 'axios';
+import React, {useEffect, useState} from "react";
 
+const API_URL = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/searchJobs";
+const APPLY_API_URL = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/apply";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -54,21 +57,30 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-// fake job data for frontend purposes only
-const fakeJobs = [
-  { id: 1, title: "Frontend Developer", company: "Meta", location: "New York, NY" },
-  { id: 2, title: "Backend Engineer", company: "Apple", location: "San Francisco, CA" },
-  { id: 3, title: "UI/UX Designer", company: "Amazon", location: "Remote" },
-  { id: 4, title: "Database Adminstrator", company: "Tesla", location: "Austin, TX" },
-  { id: 5, title: "Full Stack Developer", company: "Siemens", location: "Seattle, WA" },
-  { id: 6, title: "AI Researcher", company: "Mathworks", location: "Boston, MA" },
-];
+// // fake job data for frontend purposes only
+// const fakeJobs = [
+//   { id: 1, title: "Frontend Developer", company: "Meta", location: "New York, NY" },
+//   { id: 2, title: "Backend Engineer", company: "Apple", location: "San Francisco, CA" },
+//   { id: 3, title: "UI/UX Designer", company: "Amazon", location: "Remote" },
+//   { id: 4, title: "Database Adminstrator", company: "Tesla", location: "Austin, TX" },
+//   { id: 5, title: "Full Stack Developer", company: "Siemens", location: "Seattle, WA" },
+//   { id: 6, title: "AI Researcher", company: "Mathworks", location: "Boston, MA" },
+// ];
 
+interface Job {
+  JobID: number;
+  JobTitle: string;
+  CompanyName: string;
+}
 
 
 export default function ApplicantHome() {
   const router = useRouter();
   const [page, setPage] = React.useState(0);
+  const [jobs, setJobs] = React.useState<Job[]>([]);
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
   const jobsPerPage = 5;
 
   const goTo = (path: string) => router.push(path);
@@ -76,17 +88,109 @@ export default function ApplicantHome() {
   const goToEditApplicant = () => goTo("/applicant/edit");
   const goToSearchJobs = () => goTo("/applicant/search");
   const goToReviewJobs = () => goTo("/applicant/review");
+  const goToHome = () => router.push('/');
+  const [ApplicantID, setApplicantID] = useState<string | null>(null);
 
-  const logout = () => {
-    localStorage.removeItem("userId");
-    goTo("/");
+  // logout should work
+  function logout() {
+        localStorage.removeItem('userId');
+        goToHome();
+      }
+      
+
+  useEffect(() => {
+    const storeId = localStorage.getItem("userId");
+    if (!storeId) {
+      router.push("/applicant/login");
+    }
+    else {
+      setApplicantID(storeId);
+    }
+  }, [router]);
+
+  // function to fetch the jobs from the backend
+  const fetchJobs = async (term?: string) => {
+    setLoading(true);
+    setError("");
+    try {
+      const url = term
+        ? `${API_URL}?skill=${encodeURIComponent(term)}&company=${encodeURIComponent(term)}`
+        : `${API_URL}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Error ${res.status}`);
+      const data = await res.json();
+      console.log("Fetched raw data:", data);
+
+      // Handle multiple possible API response formats
+      let jobsArray: any[] = [];
+      if (Array.isArray(data)) {
+        jobsArray = data;
+      } else if (data.body) {
+        try {
+          jobsArray = JSON.parse(data.body);
+        } catch (err) {
+          console.error("Failed to parse body:", err);
+        }
+      } else if (data.jobs) {
+        jobsArray = data.jobs;
+      }
+
+      console.log("Jobs array:", jobsArray);
+      setJobs(jobsArray);
+    } catch (err: any) {
+      setError(err.message || "Failed to load jobs");
+    } finally {
+      setLoading(false);
+    }
   };
+
+   React.useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchJobs(searchTerm);
+  };
+
+ 
+const applyJob = async (jobId: number) => {
+
+  try {
+    const response = await axios.post(
+      APPLY_API_URL,
+      {
+        applicantID: ApplicantID,
+        jobID: jobId
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("Application response:", response.data);
+    alert(response.data.body);
+  } catch (error: any) {
+    console.error("Error applying for job:", error);
+  }
+};
+
+
+
 
   // Pagination Logic (need to get this working with actual data though)
   const startIndex = page * jobsPerPage;
-  const paginatedJobs = fakeJobs.slice(startIndex, startIndex + jobsPerPage);
-  const hasNext = startIndex + jobsPerPage < fakeJobs.length;
+  const paginatedJobs = jobs.slice(startIndex, startIndex + jobsPerPage);
+  const hasNext = startIndex + jobsPerPage < jobs.length;
   const hasPrev = page > 0;
+  const totalPages = jobs.length ? Math.ceil(jobs.length / jobsPerPage) : 1;
+
 
   const handleNext = () => {
     if (hasNext) setPage((prev) => prev + 1);
@@ -118,7 +222,7 @@ export default function ApplicantHome() {
       {/* Search bar */}
       <Box sx={{ flexGrow: 1, mb: 2 }}>
         <AppBar position="static">
-          <Toolbar>
+          <Toolbar component="form" onSubmit={handleSearchSubmit}>
             <Typography
               variant="h6"
               noWrap
@@ -133,7 +237,9 @@ export default function ApplicantHome() {
                 <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
-                placeholder="Search…"
+                value = {searchTerm}
+                onChange={handleSearch}
+                placeholder="Search by skill or company..."
                 inputProps={{ "aria-label": "search" }}
               />
             </Search>
@@ -147,34 +253,50 @@ export default function ApplicantHome() {
           Available Jobs
         </Typography>
 
-        {paginatedJobs.map((job) => (
+        {paginatedJobs.map((job: any) => (
           <Box
-            key={job.id}
+            key={job.JobID}
             sx={{
+              color: "#333",
               border: "1px solid #ddd",
               borderRadius: "8px",
               padding: "16px",
               marginBottom: "12px",
-              backgroundColor: "#fafafa",
+              backgroundColor: "#c4cbe6ff",
             }}
           >
-            <Typography variant="h6">{job.title}</Typography>
-            <Typography variant="body1">{job.company}</Typography>
-            <Typography variant="body2" color="text.secondary">
-              {job.location}
-            </Typography>
+            <Box>
+            <Typography variant="h6">{job.JobTitle}</Typography>
+            <Typography variant="body1">{job.CompanyName}</Typography>
           </Box>
+          <Box>
+      <button
+        style={{
+          backgroundColor: "#1976d2",
+          color: "white",
+          border: "none",
+          padding: "8px 16px",
+          borderRadius: "4px",
+          cursor: "pointer",
+        }}
+        onClick={() => applyJob(job.JobID)}
+      >
+        Apply
+      </button>
+    </Box>
+  </Box>
+          
         ))}
 
         {/* Pagination UI */}
         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mt: 2 }}>
-          <IconButton onClick={handlePrev} disabled={!hasPrev}>
+          <IconButton onClick={() => setPage(p => p - 1)} disabled={!hasPrev}>
             <ArrowBackIosNewIcon />
           </IconButton>
           <Typography variant="body2" sx={{ mx: 2 }}>
-            Page {page + 1} of {Math.ceil(fakeJobs.length / jobsPerPage)}
+            Page {page + 1} of {totalPages}
           </Typography>
-          <IconButton onClick={handleNext} disabled={!hasNext}>
+          <IconButton onClick={() => setPage(p => p + 1)} disabled={!hasNext}>
             <ArrowForwardIosIcon />
           </IconButton>
         </Box>
