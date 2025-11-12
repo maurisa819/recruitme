@@ -2,7 +2,6 @@
 import Image from "next/image";
 import "./styles.css";
 import { useRouter } from "next/navigation";
-import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -13,8 +12,11 @@ import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import axios from 'axios';
+import React, {useEffect, useState} from "react";
 
 const API_URL = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/searchJobs";
+const APPLY_API_URL = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/apply";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -86,12 +88,25 @@ export default function ApplicantHome() {
   const goToEditApplicant = () => goTo("/applicant/edit");
   const goToSearchJobs = () => goTo("/applicant/search");
   const goToReviewJobs = () => goTo("/applicant/review");
+  const goToHome = () => router.push('/');
+  const [ApplicantID, setApplicantID] = useState<string | null>(null);
 
-  // logout needs to be implemented for this page
-  const logout = () => {
-    localStorage.removeItem("userId");
-    goTo("/");
-  };
+  // logout should work
+  function logout() {
+        localStorage.removeItem('userId');
+        goToHome();
+      }
+      
+
+  useEffect(() => {
+    const storeId = localStorage.getItem("userId");
+    if (!storeId) {
+      router.push("/applicant/login");
+    }
+    else {
+      setApplicantID(storeId);
+    }
+  }, [router]);
 
   // function to fetch the jobs from the backend
   const fetchJobs = async (term?: string) => {
@@ -141,6 +156,32 @@ export default function ApplicantHome() {
     e.preventDefault();
     fetchJobs(searchTerm);
   };
+
+ 
+const applyJob = async (jobId: number) => {
+
+  try {
+    const response = await axios.post(
+      APPLY_API_URL,
+      {
+        applicantID: ApplicantID,
+        jobID: jobId
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("Application response:", response.data);
+    alert(response.data.body);
+  } catch (error: any) {
+    console.error("Error applying for job:", error);
+  }
+};
+
+
 
 
   // Pagination Logic (need to get this working with actual data though)
@@ -216,16 +257,35 @@ export default function ApplicantHome() {
           <Box
             key={job.JobID}
             sx={{
+              color: "#333",
               border: "1px solid #ddd",
               borderRadius: "8px",
               padding: "16px",
               marginBottom: "12px",
-              backgroundColor: "#fafafa",
+              backgroundColor: "#c4cbe6ff",
             }}
           >
+            <Box>
             <Typography variant="h6">{job.JobTitle}</Typography>
             <Typography variant="body1">{job.CompanyName}</Typography>
           </Box>
+          <Box>
+      <button
+        style={{
+          backgroundColor: "#1976d2",
+          color: "white",
+          border: "none",
+          padding: "8px 16px",
+          borderRadius: "4px",
+          cursor: "pointer",
+        }}
+        onClick={() => applyJob(job.JobID)}
+      >
+        Apply
+      </button>
+    </Box>
+  </Box>
+          
         ))}
 
         {/* Pagination UI */}
