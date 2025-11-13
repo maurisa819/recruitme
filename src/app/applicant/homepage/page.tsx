@@ -18,6 +18,10 @@ export default function ApplicantHome() {
     const [applicantSkills, setApplicantSkills] = React.useState("");
     const [applicantUserName, setApplicantUserName] = React.useState("");
 
+    // For the jobs that the applicant has applied to
+    const [jobsApplied, setJobsApplied] = React.useState<Array<{JobID: number; JobTitle: string; CompanyName: string;}>>([]);
+
+
     function logout() {
       localStorage.removeItem('userId');
       goToHome();
@@ -26,21 +30,36 @@ export default function ApplicantHome() {
     useEffect(() => {
     const applicantID = localStorage.getItem("userId");
     //console.log("Applicant ID is ", applicantID);
+      if (!applicantID) {
+        router.push("/applicant/login");
+      }
 
-    if (applicantID) {
-      fetch(`https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/reviewApplicant?applicantID=${applicantID}`)
-        .then(res => res.json())
-        .then(data => {
-          //console.log("Applicant data:", data);
-          if (data.length > 0) {
-            setApplicantName(data[0].ApplicantName);
-            setApplicantSkills(data[0].ApplicantSkills);
-            setApplicantUserName(data[0].ApplicantUsername);
-          }
-        })
-        .catch(err => console.error(err));
-    }
+    fetch(
+      `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/reviewApplicant?applicantID=${applicantID}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.length > 0) {
+          const applicant = data[0];
+          setApplicantName(applicant.ApplicantName);
+          setApplicantSkills(applicant.ApplicantSkills);
+          setApplicantUserName(applicant.ApplicantUsername);
+        }
+      })
+      .catch((err) => console.error("Error fetching applicant info:", err));
+
+    // finding the jobs that have been applied to
+    fetch(
+      `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/getJobApplied?applicantID=${applicantID}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setJobsApplied(data);
+        console.log("Jobs applied to data:", data);
+      })
+      .catch((err) => console.error("Error fetching applied jobs:", err));
   }, []);
+
   return (
     <div>
       {/* Ribbon */}
@@ -113,10 +132,18 @@ export default function ApplicantHome() {
       <section className="acceptedOffers">
         <h2>Jobs Applied To </h2>
         <ul>
-          <li className="acceptedOfferCard">
-            <h3>Software Engineer</h3>
-            <p><strong>Company:</strong> Meta </p>
+          {jobsApplied.length > 0 ? (
+            jobsApplied.map((job, index) => (
+              <li key={index} className="acceptedOfferCard">
+                <h3>{job.JobTitle}</h3>
+                <p>
+                  <strong>Company:</strong> {job.CompanyName}
+                </p>
           </li>
+            ))
+          ) : (
+            <li> Have not applied to any jobs </li>
+          )}
     
         </ul>
       </section>
