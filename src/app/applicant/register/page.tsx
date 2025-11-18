@@ -45,14 +45,9 @@ export default function Home() {
       console.log(response);
       console.log(response.data.body);
       // store userID in local storage
-      if (response.data.body === undefined) {
-        alert("Registration failed. Username may be taken.");
-        return;
-      } else {
-        localStorage.setItem('userId', response.data.body);
-        // redirect to applicant homepage
-        router.push('/applicant/homepage');
-      }
+      localStorage.setItem('userId', response.data.body);
+      // redirect to applicant homepage
+      router.push('/applicant/homepage');
     }).catch(function (error : any) {
       console.log(error);
     });
