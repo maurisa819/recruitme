@@ -19,7 +19,10 @@ export default function ApplicantHome() {
     const [applicantUserName, setApplicantUserName] = React.useState("");
 
     // For the jobs that the applicant has applied to
-    const [jobsApplied, setJobsApplied] = React.useState<Array<{JobID: number; JobTitle: string; CompanyName: string;}>>([]);
+    const [jobsApplied, setJobsApplied] = React.useState<
+  Array<{ JobTitle: string; CompanyName: string; ApplicationStatus: string }>
+>([]);
+
 
 
     function logout() {
