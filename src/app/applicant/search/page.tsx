@@ -14,6 +14,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import axios from 'axios';
 import React, {useEffect, useState} from "react";
+import { request } from "http";
 
 const API_URL = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/searchJobs";
 const APPLY_API_URL = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/apply";
@@ -76,12 +77,12 @@ interface Job {
 
 export default function ApplicantHome() {
   const router = useRouter();
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = React.useState(1);
   const [jobs, setJobs] = React.useState<Job[]>([]);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
-  const jobsPerPage = 5;
+
 
   const goTo = (path: string) => router.push(path);
   const goToApplicantHome = () => goTo("/applicant/homepage");
@@ -91,6 +92,7 @@ export default function ApplicantHome() {
   const goToHome = () => router.push('/');
   const [ApplicantID, setApplicantID] = useState<string | null>(null);
 
+  const jobsPerPage = 5
   // logout should work
   function logout() {
         localStorage.removeItem('userId');
@@ -109,14 +111,32 @@ export default function ApplicantHome() {
   }, [router]);
 
   // function to fetch the jobs from the backend
-  const fetchJobs = async (term?: string) => {
+  const fetchJobs = async (term?: string, currPage?: number) => {
+
+    const pageToUse = currPage;
+
+    console.log("Calling API with:", {
+      term,
+      pageToUse,
+      pageSize: jobsPerPage,
+    });
+
+    const requestBody = {
+      term: term && term.trim() !== "" ? term : undefined,
+      page: pageToUse,
+      pageSize: jobsPerPage
+    };
+    console.log(JSON.stringify(requestBody))
     setLoading(true);
     setError("");
     try {
-      const url = term
-        ? `${API_URL}?skill=${encodeURIComponent(term)}&company=${encodeURIComponent(term)}`
-        : `${API_URL}`;
-      const res = await fetch(url);
+  
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(requestBody)
+      });
+      
       if (!res.ok) throw new Error(`Error ${res.status}`);
       const data = await res.json();
       console.log("Fetched raw data:", data);
@@ -145,7 +165,7 @@ export default function ApplicantHome() {
   };
 
    React.useEffect(() => {
-    fetchJobs();
+    fetchJobs(undefined, 1);
   }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -154,7 +174,9 @@ export default function ApplicantHome() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchJobs(searchTerm);
+    const firstPage = 1;
+    setPage(firstPage);
+    fetchJobs(searchTerm, firstPage);
   };
 
  
@@ -184,19 +206,18 @@ const applyJob = async (jobId: number) => {
 
 
 
-  // Pagination Logic (need to get this working with actual data though)
-  const startIndex = page * jobsPerPage;
-  const paginatedJobs = jobs.slice(startIndex, startIndex + jobsPerPage);
-  const hasNext = startIndex + jobsPerPage < jobs.length;
-  const hasPrev = page > 0;
-  const totalPages = jobs.length ? Math.ceil(jobs.length / jobsPerPage) : 1;
 
 
   const handleNext = () => {
-    if (hasNext) setPage((prev) => prev + 1);
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchJobs(searchTerm, nextPage);
   };
   const handlePrev = () => {
-    if (hasPrev) setPage((prev) => prev - 1);
+    if (page === 1) return;
+    const prevPage = page - 1;
+    setPage(prevPage);
+    fetchJobs(searchTerm, prevPage);
   };
 
 
@@ -253,7 +274,7 @@ const applyJob = async (jobId: number) => {
           Available Jobs
         </Typography>
 
-        {paginatedJobs.map((job: any) => (
+        {jobs.map((job: any) => (
           <Box
             key={job.JobID}
             sx={{
@@ -289,15 +310,15 @@ const applyJob = async (jobId: number) => {
         ))}
 
         {/* Pagination UI */}
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mt: 2 }}>
-          <IconButton onClick={() => setPage(p => p - 1)} disabled={!hasPrev}>
-            <ArrowBackIosNewIcon />
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", pb: 10}}>
+          <IconButton onClick={handlePrev}>
+            <ArrowBackIosNewIcon sx={{color: 'white' }}/>
           </IconButton>
           <Typography variant="body2" sx={{ mx: 2 }}>
-            Page {page + 1} of {totalPages}
+            Page {page}
           </Typography>
-          <IconButton onClick={() => setPage(p => p + 1)} disabled={!hasNext}>
-            <ArrowForwardIosIcon />
+          <IconButton onClick={handleNext}>
+            <ArrowForwardIosIcon sx={{color: 'white' }}/>
           </IconButton>
         </Box>
       </Box>
