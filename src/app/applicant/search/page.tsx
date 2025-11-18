@@ -87,7 +87,7 @@ export default function ApplicantHome() {
   const goToApplicantHome = () => goTo("/applicant/homepage");
   const goToEditApplicant = () => goTo("/applicant/edit");
   const goToSearchJobs = () => goTo("/applicant/search");
-  const goToReviewJobs = () => goTo("/applicant/review");
+  // const goToReviewJobs = () => goTo("/applicant/review");
   const goToHome = () => router.push('/');
   const [ApplicantID, setApplicantID] = useState<string | null>(null);
 
@@ -213,7 +213,7 @@ const applyJob = async (jobId: number) => {
   
             <button onClick={goToEditApplicant} className="ribbonButton">Edit Profile</button>
   
-            <button onClick={goToReviewJobs} className="ribbonButton">Review Jobs</button>
+            {/* <button onClick={goToReviewJobs} className="ribbonButton">Review Jobs</button> */}
   
             <button className="ribbonButton" onClick={(e) => logout()}>Logout</button>
   
