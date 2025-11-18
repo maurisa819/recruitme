@@ -4,8 +4,7 @@ import "./styles.css";
 import { useRouter } from "next/navigation";
 import React, {useEffect, useState} from "react";
 import axios from 'axios';
-import Applicant from "@/app/applicant";
-import App from "next/app";
+
 
 
 export default function ApplicantHome() {
@@ -14,7 +13,7 @@ export default function ApplicantHome() {
     const goToApplicantHome = () => router.push("/applicant/homepage");
     const goToEditApplicant = () => router.push("/applicant/edit");
     const goToSearchJobs = () => router.push("/applicant/search");
-    const goToReviewJobs = () => router.push("/applicant/review");
+    // const goToReviewJobs = () => router.push("/applicant/review");
     const [ApplicantID, setApplicantID] = useState<string | null>(null);
 
     const goToHome = () => router.push('/');
@@ -99,7 +98,7 @@ export default function ApplicantHome() {
 
           <button onClick={goToEditApplicant} className="ribbonButton">Edit Profile</button>
 
-          <button onClick={goToReviewJobs} className="ribbonButton">Review Jobs</button>
+          {/* <button onClick={goToReviewJobs} className="ribbonButton">Review Jobs</button> */}
 
           <button className="ribbonButton" onClick={(e) => logout()}>Logout</button>
 
