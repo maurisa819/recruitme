@@ -73,7 +73,7 @@ export default function ApplicantHome() {
       })
       .catch((err) => console.error("Error fetching applied jobs:", err));
 
-    fetch ( `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/getJobOffers?applicantID=${applicantID}`)  
+    fetch ( `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/applicantJobOffers?applicantID=${applicantID}`)  
     .then((res) => res.json())
     .then((data) => {
       console.log("Job offers data:", data);
