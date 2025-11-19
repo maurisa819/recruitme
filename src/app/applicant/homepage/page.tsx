@@ -44,10 +44,7 @@ export default function ApplicantHome() {
   useEffect(() => {
     const applicantID = localStorage.getItem("userId");
     //console.log("Applicant ID is ", applicantID);
-    if (!applicantID) {
-      router.push("/applicant/login");
-    }
-
+    
     fetch(
       `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/reviewApplicant?applicantID=${applicantID}`
     )
@@ -76,6 +73,7 @@ export default function ApplicantHome() {
     fetch ( `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/applicantJobOffers?applicantID=${applicantID}`)  
     .then((res) => res.json())
     .then((data) => {
+      setJobsOffers(data);
       console.log("Job offers data:", data);
     })
     .catch((err) => console.error("Error fetching job offers:", err));
