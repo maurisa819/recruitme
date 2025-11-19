@@ -25,6 +25,10 @@ export default function ApplicantHome() {
     Array<{ JobID: number; JobTitle: string; CompanyName: string; ApplicationStatus: string }>
   >([]);
 
+  const [jobsOffers, setJobsOffers] = useState<
+    Array<{ JobID: number; JobTitle: string; CompanyName: string; ApplicationStatus: string }>
+  >([]);
+
   const WITHDRAW_API_URL = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/withdrawlApplication";
 
    useEffect(() => {
@@ -68,6 +72,13 @@ export default function ApplicantHome() {
         console.log("Jobs applied to data:", data);
       })
       .catch((err) => console.error("Error fetching applied jobs:", err));
+
+    fetch ( `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/getJobOffers?applicantID=${applicantID}`)  
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Job offers data:", data);
+    })
+    .catch((err) => console.error("Error fetching job offers:", err));
   }, []);
 
   // runs the post request to withdraw application
@@ -136,14 +147,32 @@ export default function ApplicantHome() {
           <section className="jobOffers">
             <h2>Job Offers</h2>
             <ul>
-              <li className="jobOfferCard">
-                <h3>Software Engineer</h3>
-                <p><strong>Company:</strong> Amazon</p>
-                <div className="offerButtons">
-                  <button className="acceptButton">Accept</button>
-                  <button className="rejectButton">Reject</button>
-                </div>
-              </li>
+              {jobsOffers.length > 0 ? (
+                jobsOffers.map((job, index) => (
+                  <li key={index} className="jobOfferCard">
+                    <h3>{job.JobTitle}</h3>
+                    <p>
+                      <strong>Company:</strong> {job.CompanyName}
+                    </p>
+                    <button
+                      style={{
+                        backgroundColor: "#1976d2",
+                        color: "white",
+                        border: "none",
+                        padding: "8px 16px",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                      }}
+                      // need to actually implement accept offer function
+                      // onClick={() => withdrawApplication(job.JobID)}
+                    >
+                      Accept Offer
+                    </button>
+                  </li>
+                ))
+              ) : (
+                <li> No job offers found </li>
+              )}
             </ul>
           </section>
 
