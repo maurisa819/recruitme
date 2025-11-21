@@ -111,6 +111,72 @@ export default function ApplicantHome() {
   };
 
 
+  // runs the post request to accept an offer 
+  const acceptOffer = async (jobID: number) => {
+
+    try {
+      const response = await axios.post(
+        WITHDRAW_API_URL,
+        {
+          applicantID: applicantID,
+          jobID: jobID
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // need to make a new get request for the offers
+      // copied the previous fetch to referesh after deletion
+    //   fetch(
+    //   `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/getJobApplied?applicantID=${applicantID}`
+    // )
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setJobsApplied(data);
+    //     console.log("Jobs applied to data:", data);
+    //   })
+    //   .catch((err) => console.error("Error fetching applied jobs:", err));
+    } catch (error: any) {
+      console.error("Error accepting offer:", error);
+    }
+  };
+
+  // runs the post request to reject an offer 
+  const rejectOffer = async (jobID: number) => {
+
+    try {
+      const response = await axios.post(
+        WITHDRAW_API_URL,
+        {
+          applicantID: applicantID,
+          jobID: jobID
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // need to make a new get request for the offers
+      // copied the previous fetch to referesh after deletion
+    //   fetch(
+    //   `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/getJobApplied?applicantID=${applicantID}`
+    // )
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setJobsApplied(data);
+    //     console.log("Jobs applied to data:", data);
+    //   })
+    //   .catch((err) => console.error("Error fetching applied jobs:", err));
+    } catch (error: any) {
+      console.error("Error accepting offer:", error);
+    }
+  };
+
+
+
       
       return (
         <div>
@@ -162,9 +228,23 @@ export default function ApplicantHome() {
                         cursor: "pointer",
                       }}
                       // need to actually implement accept offer function
-                      // onClick={() => withdrawApplication(job.JobID)}
+                      onClick={() => acceptOffer(job.JobID)}
                     >
-                      Accept Offer
+                      Accept
+                    </button>
+                    <button
+                      style={{
+                        backgroundColor: "#1976d2",
+                        color: "white",
+                        border: "none",
+                        padding: "8px 16px",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                      }}
+                      // need to actually implement reject offer function
+                      onClick={() => rejectOffer(job.JobID)}
+                    >
+                      Reject
                     </button>
                   </li>
                 ))
@@ -232,12 +312,6 @@ export default function ApplicantHome() {
           </section>
 
           <footer>
-
-            <ol>Notifications:
-              <li>Message</li>
-              <li>Message</li>
-              <li>Message</li>
-            </ol>
           </footer>
         </div>
       );
