@@ -8,6 +8,8 @@ import axios from "axios";
 export default function ReviewApplicants() {
   const router = useRouter();
 
+  const [page, setPage] = useState(1)
+  
   const goToCompanyHome = () => router.push("/company/home");
   const goToReviewProfile = () => router.push("/company/review");
   const goToLogin = () => router.push("/company/login");
@@ -31,7 +33,7 @@ export default function ReviewApplicants() {
     setJobTitle(storedjobTitle);
     setJobID(storedjobId);
 
-    const url = `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/reviewApplicantsForJob?jobId=${storedjobId}`;
+    const url = `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/reviewApplicantsForJob?jobId=${storedjobId}&page=${page}&pageSize=10`;
 
     axios
       .get(url)
