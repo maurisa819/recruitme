@@ -2,6 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import InputBase from "@mui/material/InputBase";
+import SearchIcon from "@mui/icons-material/Search";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import "../styles.css";
 import axios from "axios";
 
@@ -33,6 +41,7 @@ export default function ReviewApplicants() {
     setJobTitle(storedjobTitle);
     setJobID(storedjobId);
 
+    
     const url = `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/reviewApplicantsForJob?jobId=${storedjobId}&page=${page}&pageSize=10`;
 
     axios
@@ -48,7 +57,14 @@ export default function ReviewApplicants() {
       .catch(() => {
         alert("Unable to retrieve applicants or required skills.");
       });
-  }, []);
+  }, [page]);
+
+  const handleNext = () => {
+    setPage((prev) => prev + 1);
+  }
+  const handlePrev = () =>{
+    setPage((prev) => (prev > 1 ? prev - 1 : prev));
+  }
 
   // Offer job
   function offerJob(applicant: any) {
@@ -251,11 +267,17 @@ export default function ReviewApplicants() {
         </div>
       </div>
 
-      <div style={{ marginTop: "20px", textAlign: "center" }}>
-        <button className="bigButton" onClick={logout}>
-          Logout
-        </button>
-      </div>
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", pb: 10}}>
+          <IconButton onClick={handlePrev}>
+            <ArrowBackIosNewIcon sx={{color: 'white' }}/>
+          </IconButton>
+          <Typography variant="body2" sx={{ mx: 2 }}>
+            Page {page}
+          </Typography>
+          <IconButton onClick={handleNext}>
+            <ArrowForwardIosIcon sx={{color: 'white' }}/>
+          </IconButton>
+        </Box>
     </div>
   );
 }
