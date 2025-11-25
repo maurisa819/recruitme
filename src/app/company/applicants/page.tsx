@@ -17,6 +17,7 @@ export default function ReviewApplicants() {
   const router = useRouter();
 
   const [page, setPage] = useState(1)
+  const [lastPage, setLastPage] = useState(1)
   
   const goToCompanyHome = () => router.push("/company/home");
   const goToReviewProfile = () => router.push("/company/review");
@@ -56,13 +57,16 @@ export default function ReviewApplicants() {
       })
       .catch(() => {
         alert("Unable to retrieve applicants or required skills.");
+        setPage(lastPage);
       });
   }, [page]);
 
   const handleNext = () => {
+    setLastPage(page);
     setPage((prev) => prev + 1);
   }
   const handlePrev = () =>{
+    setLastPage(page);
     setPage((prev) => (prev > 1 ? prev - 1 : prev));
   }
 
@@ -269,13 +273,13 @@ export default function ReviewApplicants() {
 
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", pb: 10}}>
           <IconButton onClick={handlePrev}>
-            <ArrowBackIosNewIcon sx={{color: 'white' }}/>
+            <ArrowBackIosNewIcon sx={{color: 'rgb(82, 140, 121)' }}/>
           </IconButton>
           <Typography variant="body2" sx={{ mx: 2 }}>
             Page {page}
           </Typography>
           <IconButton onClick={handleNext}>
-            <ArrowForwardIosIcon sx={{color: 'white' }}/>
+            <ArrowForwardIosIcon sx={{color: 'rgb(82, 140, 121)' }}/>
           </IconButton>
         </Box>
     </div>
