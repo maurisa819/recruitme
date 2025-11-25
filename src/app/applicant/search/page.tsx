@@ -287,8 +287,9 @@ const applyJob = async (jobId: number) => {
             }}
           >
             <Box>
-            <Typography variant="h6">{job.JobTitle}</Typography>
-            <Typography variant="body1">{job.CompanyName}</Typography>
+            <Typography variant="h6">Job: {job.JobTitle}</Typography>
+            <Typography variant="body1">Company: {job.CompanyName}</Typography>
+            <Typography variant="body1">Skills: {job.RequiredSkills}</Typography>
           </Box>
           <Box>
       <button
