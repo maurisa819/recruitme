@@ -10,10 +10,10 @@ export default function CompanyHome() {
 
   const goToCompanyHome = () => router.push("/company/home");
   const goToReviewProfile = () => router.push("/company/review");
-  const goToReviewApplicant = () => router.push("/company/applicants");
+  const goToReviewApplicantsForJob = () => router.push("/company/applicants");
   const goToLogin = () => router.push("/company/login");
   const goToCreateJobs = () => router.push("/company/createJob");
-  const goToEditJob = () => router.push("/company/editJob")
+  const goToEditJob = () => router.push("/company/editJob");
 
   const logout = () => {
     localStorage.removeItem("companyID");
@@ -23,6 +23,11 @@ export default function CompanyHome() {
   const [companyName, setCompanyName] = useState("Company");
   const [openJobs, setOpenJobs] = useState(Array<any>);
   const [closedJobs, setClosedJobs] = useState(Array<any>);
+  const [redraw, setRedraw] = useState(0);
+
+  function forceRedraw() {
+    setRedraw(redraw + 1);
+  }
 
   useEffect(() => {
     const companyID = localStorage.getItem("companyID") || "1";
@@ -51,12 +56,18 @@ export default function CompanyHome() {
       });
   }, []);
 
-  console.log(openJobs)
+    axios
+      .get(url)
+      .then(function (response: any) {
+        console.log("Backend response:", response);
+        //console.log("Response body:", response.data.body);
 
   return (
     <div className="company-home">
       <div className="ribbon">
-        <button className="ribbonButton" onClick={(e) => logout()}>Logout</button>
+        <button className="ribbonButton" onClick={(e) => logout()}>
+          Logout
+        </button>
         <img
           className="ribbonImages"
           src="/recruitme.png"
@@ -76,12 +87,6 @@ export default function CompanyHome() {
             alt="Review Profile"
             onClick={goToReviewProfile}
           />
-          <img
-            className="icon-button"
-            src="/search.png"
-            alt="Review Applicants"
-            onClick={goToReviewApplicant}
-          />
         </div>
       </div>
 
@@ -98,7 +103,6 @@ export default function CompanyHome() {
                 <th>Job</th>
                 <th>Activate/Close</th>
                 <th># Applicants</th>
-                <th>Edit</th>
                 <th>Review Applicants</th>
               </tr>
             </thead>
@@ -111,13 +115,16 @@ export default function CompanyHome() {
                   </td>
                   <td>{job.applicants || 0}</td>
                   <td>
-                    <button onClick={() => {
-                      localStorage.setItem("jobID", job.id); // assuming job.id exists
-                      goToEditJob();
-                  }}>Edit</button>
-                  </td>
-                  <td>
-                    <button>Review</button>
+                    <button
+                      onClick={() => {
+                        localStorage.setItem("jobID", job.id);
+                        localStorage.setItem("jobTitle", job.title);
+                        localStorage.setItem("companyName", companyName);
+                        goToReviewApplicantsForJob();
+                      }}
+                    >
+                      Review
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -125,15 +132,15 @@ export default function CompanyHome() {
           </table>
         </div>
 
-        {/* Closed Jobs */}
         <div className="jobs-box">
-          <h2>Closed Jobs</h2>
+          <h2>Inactive Jobs</h2>
           <table className="jobs-table">
             <thead>
               <tr>
                 <th>Job</th>
                 <th># Hired</th>
-                <th>Reopen</th>
+                <th>Edit</th>
+                <th>Reopen Job</th>
               </tr>
             </thead>
             <tbody>
@@ -142,6 +149,16 @@ export default function CompanyHome() {
                   <td>{job.title}</td>
                   <td>{job.hired || 0}</td>
                   <td>
+                    <button
+                      onClick={() => {
+                        localStorage.setItem("jobID", job.id); // assuming job.id exists
+                        goToEditJob();
+                      }}
+                    >
+                      Edit
+                    </button>
+                  </td>
+                  <td onClick={(e) => activateJob(job.id)}>
                     <button>Reopen</button>
                   </td>
                 </tr>
