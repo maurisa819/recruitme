@@ -10,10 +10,10 @@ export default function CompanyHome() {
 
   const goToCompanyHome = () => router.push("/company/home");
   const goToReviewProfile = () => router.push("/company/review");
-  const goToReviewApplicantsForJob = () => router.push("/company/applicants");
+  const goToReviewApplicant = () => router.push("/company/applicants");
   const goToLogin = () => router.push("/company/login");
   const goToCreateJobs = () => router.push("/company/createJob");
-  const goToEditJob = () => router.push("/company/editJob");
+  const goToEditJob = () => router.push("/company/editJob")
 
   const logout = () => {
     localStorage.removeItem("companyID");
@@ -23,11 +23,6 @@ export default function CompanyHome() {
   const [companyName, setCompanyName] = useState("Company");
   const [openJobs, setOpenJobs] = useState(Array<any>);
   const [closedJobs, setClosedJobs] = useState(Array<any>);
-  const [redraw, setRedraw] = useState(0);
-
-  function forceRedraw() {
-    setRedraw(redraw + 1);
-  }
 
   let companyID = "0";
   const updateJobs = useEffect(() => {
@@ -187,9 +182,7 @@ export default function CompanyHome() {
   return (
     <div className="company-home">
       <div className="ribbon">
-        <button className="ribbonButton" onClick={(e) => logout()}>
-          Logout
-        </button>
+        <button className="ribbonButton" onClick={(e) => logout()}>Logout</button>
         <img
           className="ribbonImages"
           src="/recruitme.png"
@@ -209,6 +202,12 @@ export default function CompanyHome() {
             alt="Review Profile"
             onClick={goToReviewProfile}
           />
+          <img
+            className="icon-button"
+            src="/search.png"
+            alt="Review Applicants"
+            onClick={goToReviewApplicant}
+          />
         </div>
       </div>
 
@@ -226,6 +225,7 @@ export default function CompanyHome() {
                 <th>Close Job</th>
                 <th>Status</th>
                 <th># Applicants</th>
+                <th>Edit</th>
                 <th>Review Applicants</th>
               </tr>
             </thead>
@@ -239,16 +239,13 @@ export default function CompanyHome() {
                   <td>{job.status}</td>
                   <td>{job.applicants || 0}</td>
                   <td>
-                    <button
-                      onClick={() => {
-                        localStorage.setItem("jobID", job.id);
-                        localStorage.setItem("jobTitle", job.title);
-                        localStorage.setItem("companyName", companyName);
-                        goToReviewApplicantsForJob();
-                      }}
-                    >
-                      Review
-                    </button>
+                    <button onClick={() => {
+                      localStorage.setItem("jobID", job.id); // assuming job.id exists
+                      goToEditJob();
+                  }}>Edit</button>
+                  </td>
+                  <td>
+                    <button>Review</button>
                   </td>
                 </tr>
               ))}
@@ -256,15 +253,15 @@ export default function CompanyHome() {
           </table>
         </div>
 
+        {/* Closed Jobs */}
         <div className="jobs-box">
-          <h2>Inactive Jobs</h2>
+          <h2>Closed Jobs</h2>
           <table className="jobs-table">
             <thead>
               <tr>
                 <th>Job</th>
                 <th># Hired</th>
-                <th>Edit</th>
-                <th>Reopen Job</th>
+                <th>Reopen</th>
               </tr>
             </thead>
             <tbody>
@@ -273,16 +270,6 @@ export default function CompanyHome() {
                   <td>{job.title}</td>
                   <td>{job.hired || 0}</td>
                   <td>
-                    <button
-                      onClick={() => {
-                        localStorage.setItem("jobID", job.id); // assuming job.id exists
-                        goToEditJob();
-                      }}
-                    >
-                      Edit
-                    </button>
-                  </td>
-                  <td onClick={(e) => activateJob(job.id)}>
                     <button>Reopen</button>
                   </td>
                 </tr>
