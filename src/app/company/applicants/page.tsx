@@ -1,12 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import InputBase from "@mui/material/InputBase";
+import SearchIcon from "@mui/icons-material/Search";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import "../styles.css";
+import axios from "axios";
 
 export default function ReviewApplicants() {
   const router = useRouter();
 
+  const [page, setPage] = useState(1)
+  const [lastPage, setLastPage] = useState(1)
+  
   const goToCompanyHome = () => router.push("/company/home");
   const goToReviewProfile = () => router.push("/company/review");
   const goToLogin = () => router.push("/company/login");
@@ -165,18 +177,111 @@ export default function ReviewApplicants() {
             alt="Review Company Profile"
             onClick={goToReviewProfile}
           />
-          <img
-            className="icon-button"
-            src="/search.png"
-            alt="Review Applicants"
-            onClick={goToReviewApplicant}
-          />
         </div>
       </div>
 
       <div className="content">
-        <h1 className="pageHeading">Review Applicants</h1>
+        <h1 className="pageHeading" style={{ textAlign: "center" }}>
+          {companyName} {jobTitle} Position
+        </h1>
+
+        <div className="jobs-box">
+          <h2 style={{ textAlign: "center" }}>Applicants</h2>
+          <h3>Required Job Skills: {requiredSkills}</h3>
+          <table className="jobs-table">
+            <thead>
+              <tr>
+                <th>Applicant Name</th>
+                <th>Applicant Skills</th>
+                <th>Rating</th>
+                <th>Decision</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {applicants.map((applicant: any, i) => (
+                <tr key={i}>
+                  <td>{applicant.ApplicantName}</td>
+                  <td>{applicant.ApplicantSkills}</td>
+
+                  {/* Rating dropdown */}
+                  <td>
+                    <select
+                      value={applicant.Rating || ""}
+                      onChange={(e) => updateRating(applicant, e.target.value)}
+                    >
+                      <option value=""></option>
+                      <option value="Hirable">Hirable</option>
+                      <option value="Wait">Wait</option>
+                      <option value="Unacceptable">Unacceptable</option>
+                    </select>
+                  </td>
+
+                  {/* Decision Column */}
+                  <td>
+                    {applicant.ApplicationStatus === "Pending" &&
+                      !applicant.Rating && <>Please rate applicant</>}
+
+                    {applicant.Rating === "Unacceptable" && <>Denied</>}
+
+                    {applicant.Rating === "Wait" && (
+                      <>Please update rating to Hirable to offer job</>
+                    )}
+
+                    {applicant.Rating === "Hirable" &&
+                      applicant.ApplicationStatus === "Pending" && (
+                        <>
+                          <button
+                            style={{ backgroundColor: "green" }}
+                            onClick={() => offerJob(applicant)}
+                          >
+                            Offer Job
+                          </button>
+                        </>
+                      )}
+
+                    {applicant.ApplicationStatus === "Offered" && (
+                      <>
+                        <span>Job Offered</span>
+                        <button
+                          style={{ backgroundColor: "red" }}
+                          onClick={() => rescindOffer(applicant)}
+                        >
+                          Rescind
+                        </button>
+                      </>
+                    )}
+
+                    {applicant.ApplicationStatus === "Hired" && (
+                      <>
+                        <span>Hired</span>
+                        <button
+                          style={{ backgroundColor: "red" }}
+                          onClick={() => rescindOffer(applicant)}
+                        >
+                          Rescind
+                        </button>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", pb: 10}}>
+          <IconButton onClick={handlePrev}>
+            <ArrowBackIosNewIcon sx={{color: 'rgb(82, 140, 121)' }}/>
+          </IconButton>
+          <Typography variant="body2" sx={{ mx: 2 }}>
+            Page {page}
+          </Typography>
+          <IconButton onClick={handleNext}>
+            <ArrowForwardIosIcon sx={{color: 'rgb(82, 140, 121)' }}/>
+          </IconButton>
+        </Box>
     </div>
   );
 }

@@ -76,7 +76,42 @@ interface Job {
 
 
 export default function ApplicantHome() {
-    const router = useRouter();
+  const router = useRouter();
+  const [page, setPage] = React.useState(1);
+  const [jobs, setJobs] = React.useState<Job[]>([]);
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
+
+
+  const goTo = (path: string) => router.push(path);
+  const goToApplicantHome = () => goTo("/applicant/homepage");
+  const goToEditApplicant = () => goTo("/applicant/edit");
+  const goToSearchJobs = () => goTo("/applicant/search");
+  // const goToReviewJobs = () => goTo("/applicant/review");
+  const goToHome = () => router.push('/');
+  const [ApplicantID, setApplicantID] = useState<string | null>(null);
+
+  const jobsPerPage = 5
+  // logout should work
+  function logout() {
+        localStorage.removeItem('userId');
+        goToHome();
+      }
+      
+
+  useEffect(() => {
+    const storeId = localStorage.getItem("userId");
+    if (!storeId) {
+      router.push("/applicant/login");
+    }
+    else {
+      setApplicantID(storeId);
+    }
+  }, [router]);
+
+  // function to fetch the jobs from the backend
+  const fetchJobs = async (term?: string, currPage?: number) => {
 
     const pageToUse = currPage;
 
