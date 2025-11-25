@@ -38,9 +38,9 @@ export default function ReviewApplicants() {
     const storedjobId = localStorage.getItem("jobID");
     const storedjobTitle = localStorage.getItem("jobTitle");
 
-    setCompanyName(storedCompanyName);
-    setJobTitle(storedjobTitle);
-    setJobID(storedjobId);
+    setCompanyName(storedCompanyName ?? "");
+    setJobTitle(storedjobTitle ?? "");
+    setJobID(storedjobId ?? "");
 
     
     const url = `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/reviewApplicantsForJob?jobId=${storedjobId}&page=${page}&pageSize=10`;
