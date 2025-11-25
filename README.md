@@ -61,7 +61,11 @@ http://recruitme-northcarolina.s3-website-us-east-1.amazonaws.com
     - From the Company homepage, go to the Inactive Jobs list
     - If no job is there create a new job with a new name 
     - Click the "Reopen" button on the job you want to activate
-    
+
+- Close Job
+    - From the Company homepage, go to the Open Jobs list
+    - Click the "Close" button on the job you want to close
+
 - Search Job (with pagination)
     - From the Applicant homepage, click Apply to Jobs in the top ribbon
     - Type a keyword, company name, or job title into the search bar
@@ -76,16 +80,12 @@ http://recruitme-northcarolina.s3-website-us-east-1.amazonaws.com
 - Withdraw from Job
     - From the Applicant homepage, scroll to the Jobs Applied To section
     - Click "Withdraw Application" next to the job you want to withdraw from
-
-- Close Job
-    - From the Company homepage, go to the Open Jobs list
-    - Click the "Close" button on the job you want to close
     
 - Review Applicants (with pagination)
     - From the Company homepage, go to the Open Jobs list
     - Click "Review" on the job you want to see applicants for
     - Use the arrow buttons at the bottom to move through pages of applicants (10 per page)
-    
+ 
 - Offer Job
     - From the Company homepage, under Open Jobs list click "Review" next to the job you want to see applicants for
     - In the Rating dropdown for an applicant, select "Hirable"
@@ -95,6 +95,8 @@ http://recruitme-northcarolina.s3-website-us-east-1.amazonaws.com
     - From the Company homepage, under Open Jobs list click "Review" next to the job you want to see applicants for
     - Find the applicant who was already offered the job
     - Click Rescind in the Decision column
+    
+
 
 
 
