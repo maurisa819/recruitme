@@ -53,3 +53,48 @@ http://recruitme-northcarolina.s3-website-us-east-1.amazonaws.com
     - Enter the new job title, description, and requirements.
     - Click "Apply Changes"
 
+## Completed use cases for iteration 2:
+
+### Once you register/login, you will NEED to click on "Logout" in order to register or login with a different account (will not change on refresh)
+
+- Activate Job
+    - From the Company homepage, go to the Inactive Jobs list
+    - If no job is there create a new job with a new name 
+    - Click the "Reopen" button on the job you want to activate
+    
+- Search Job (with pagination)
+    - From the Applicant homepage, click Apply to Jobs in the top ribbon
+    - Type a keyword, company name, or job title into the search bar
+    - Scroll through the job list or use the search results to find a job (search works with company name, job title, and skills)
+    - Use the arrow buttons at the bottom to move through pages of jobs (5 per page)
+    
+- Apply to Job
+    - From the Applicant homepage, click "Apply to Jobs" in the top ribbon
+    - Browse the list of active jobs or search using the bar at the top
+    - Click "Apply" on the job you want
+    
+- Withdraw from Job
+    - From the Applicant homepage, scroll to the Jobs Applied To section
+    - Click "Withdraw Application" next to the job you want to withdraw from
+
+- Close Job
+    - From the Company homepage, go to the Open Jobs list
+    - Click the "Close" button on the job you want to close
+    
+- Review Applicants (with pagination)
+    - From the Company homepage, go to the Open Jobs list
+    - Click "Review" on the job you want to see applicants for
+    - Use the arrow buttons at the bottom to move through pages of applicants (10 per page)
+    
+- Offer Job
+    - From the Company homepage, under Open Jobs list click "Review" next to the job you want to see applicants for
+    - In the Rating dropdown for an applicant, select "Hirable"
+    - In the Decision column, click "Offer Job"
+
+- Rescind Job Offer
+    - From the Company homepage, under Open Jobs list click "Review" next to the job you want to see applicants for
+    - Find the applicant who was already offered the job
+    - Click Rescind in the Decision column
+
+
+
