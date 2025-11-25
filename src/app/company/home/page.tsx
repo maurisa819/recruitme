@@ -24,160 +24,34 @@ export default function CompanyHome() {
   const [openJobs, setOpenJobs] = useState(Array<any>);
   const [closedJobs, setClosedJobs] = useState(Array<any>);
 
-  let companyID = "0";
-  const updateJobs = useEffect(() => {
-    companyID = localStorage.getItem("companyID") || "1";
+  useEffect(() => {
+    const companyID = localStorage.getItem("companyID") || "1";
     const url = `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/reviewCompany?companyID=${companyID}`;
 
     axios
       .get(url)
       .then(function (response: any) {
         console.log("Backend response:", response);
-        //console.log("Response body:", response.data.body);
-
+        console.log("Response body:", response.data.body);
+        
         const data = response.data.body
           ? JSON.parse(response.data.body)
           : response.data;
-
-        console.log("Response Data: ", data);
+        
+        console.log(data)
         setCompanyName(data.companyName);
         if (data.jobs) {
           setOpenJobs(data.jobs.openJobs);
           setClosedJobs(data.jobs.closedJobs);
-          console.log("Received Open:", data.jobs.openJobs);
-          console.log("Received Closed:", data.jobs.closedJobs);
         }
       })
       .catch(function (error: any) {
         console.log("Axios fetch error:", error);
         alert("Unable to fetch company data. Please try again.");
       });
-  }, [redraw]);
+  }, []);
 
-  console.log("Open Jobs:", openJobs);
-  console.log("Closed Jobs:", closedJobs);
-
-  function activateJob(jID: string) {
-    for (let i = 0; i < closedJobs.length; i++) {
-      if (closedJobs[i].id === jID) {
-        
-        // Activate the job
-        console.log("Activating job with ID:", jID);
-        axios
-          .post(
-            "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/activateJob",
-            {
-              jobID: jID,
-            }
-          )
-          .then(function (response) {
-            console.log("Job activated:", response);
-            forceRedraw();
-          })
-          .catch(function (error) {
-            console.log("Error activating job:", error);
-            alert("Unable to activate job. Please try again.");
-          });
-        break;
-      }
-    }
-  }
-
-  function closeJob(jID: string) {
-    for (let i = 0; i < openJobs.length; i++) {
-      if (openJobs[i].id === jID) {
-        if (openJobs[i].status === "Active") {
-          // Close the job
-          axios
-            .post(
-              "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/closeJob",
-              {
-                jobID: jID,
-              }
-            )
-            .then(function (response) {
-              console.log("Job closed:", response);
-              forceRedraw();
-            })
-            .catch(function (error) {
-              console.log("Error closing job:", error);
-              alert("Unable to close job. Please try again.");
-            });
-        }
-      }
-    }
-  }
-
-  function activateOrCloseJob(jID: string) {
-    for (let i = 0; i < openJobs.length; i++) {
-      if (openJobs[i].id === jID) {
-        if (openJobs[i].status === "Active") {
-          // Close the job
-          axios
-            .post(
-              "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/closeJob",
-              {
-                jobID: jID,
-              }
-            )
-            .then(function (response) {
-              console.log("Job closed:", response);
-              // // hold onto job info
-              // let heldJob = null;
-              // for (let i = 0; i < openJobs.length; i++) {
-              //   if (openJobs[i].id === jID) {
-              //     heldJob = openJobs[i];
-              //     break;
-              //   }
-              // }
-              // // remove job from open jobs
-              // let updatedJobs = openJobs.filter((job) => job.id !== jID);
-              // setOpenJobs([updatedJobs]);
-              // // add job to closed jobs
-              // if (heldJob) {
-              //   heldJob.status = "Inactive";
-              //   setClosedJobs((prevClosedJobs) => [
-              //     ...prevClosedJobs,
-              //     heldJob,
-              //   ]);
-              // }
-              forceRedraw();
-            })
-            .catch(function (error) {
-              console.log("Error closing job:", error);
-              alert("Unable to close job. Please try again.");
-            });
-        } else if (openJobs[i].status === "Inactive") {
-          // Activate the job
-          axios
-            .post(
-              "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/activateJob",
-              {
-                jobID: jID,
-              }
-            )
-            .then(function (response) {
-              console.log("Job activated:", response);
-              let updatedJobs = openJobs;
-              for (let i = 0; i < openJobs.length; i++) {
-                if (updatedJobs[i].id === jID) {
-                  if (updatedJobs[i].status === "Inactive") {
-                    updatedJobs[i].status = "Active";
-                  }
-                  break;
-                }
-              }
-              setOpenJobs([...updatedJobs]);
-            })
-            .catch(function (error) {
-              console.log("Error activating job:", error);
-              alert("Unable to activate job. Please try again.");
-            });
-        }
-        break;
-      }
-    }
-  }
+  console.log(openJobs)
 
   return (
     <div className="company-home">
@@ -222,8 +96,7 @@ export default function CompanyHome() {
             <thead>
               <tr>
                 <th>Job</th>
-                <th>Close Job</th>
-                <th>Status</th>
+                <th>Activate/Close</th>
                 <th># Applicants</th>
                 <th>Edit</th>
                 <th>Review Applicants</th>
@@ -233,10 +106,9 @@ export default function CompanyHome() {
               {openJobs.map((job, i) => (
                 <tr key={i}>
                   <td>{job.title}</td>
-                  <td onClick={(e) => closeJob(job.id)}>
-                    <button>Close</button>
+                  <td>
+                    <button>Activate/Close</button>
                   </td>
-                  <td>{job.status}</td>
                   <td>{job.applicants || 0}</td>
                   <td>
                     <button onClick={() => {
