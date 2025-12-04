@@ -17,6 +17,7 @@ export default function CompanyLogin() {
     const goToCompanyRegister = () => router.push("/company/register")
     const goToCompanyHome = () => router.push("/company/home")
     const goToApplicantLogin = () => router.push("/")
+    const goToAdminHome = () => router.push("/admin/home");
     
     function loginCompany(username: string, password: string) {
         axios.post(apiURL, {
@@ -28,9 +29,16 @@ export default function CompanyLogin() {
             
             const parsedBody = JSON.parse(response.data.body); 
             console.log(parsedBody)
-            localStorage.setItem('companyID', parsedBody);
 
-            goToCompanyHome();
+            if (parsedBody === 0) {
+                // Admin Login
+                localStorage.setItem('adminUser', username);
+                goToAdminHome();
+            } else {
+                localStorage.setItem('companyID', parsedBody);
+                goToCompanyHome();
+            }
+            
         }).catch(function (error: any){
             console.log(error)
         })
