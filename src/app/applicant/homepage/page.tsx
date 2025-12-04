@@ -151,16 +151,6 @@ const refreshRejected = async () => {
   }
 };
 
-const refreshJobOffers = async () => {
-  if (!applicantID) return;
-  try {
-    const res = await fetch(`https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/applicantJobOffers?applicantID=${applicantID}`);
-    const data = await res.json();
-    setJobsOffers(data);
-  } catch (err) {
-    console.error("Error fetching job offers:", err);
-  }
-};
 
 
 
@@ -182,7 +172,6 @@ const refreshJobOffers = async () => {
       );
       await refreshAccepted();
       await refreshRejected();
-      await refreshJobOffers();
 
     } catch (error: any) {
       console.error("Error accepting offer:", error);
@@ -209,7 +198,6 @@ const refreshJobOffers = async () => {
       // copied the previous fetch to referesh after deletion
       await refreshAccepted();
       await refreshRejected();
-      await refreshJobOffers();
 
     } catch (error: any) {
       console.error("Error accepting offer:", error);
@@ -313,7 +301,7 @@ const refreshJobOffers = async () => {
           </section>
 
           {/* Rejected Jobs*/}
-          <section className="acceptedOffers">
+          {/* <section className="acceptedOffers">
             <h2>Rejected Offers</h2>
             <ul>
                {(deniedJobsOffers && deniedJobsOffers.length > 0) ? (
@@ -327,7 +315,7 @@ const refreshJobOffers = async () => {
               <li>No rejected jobs.</li>
             )}
           </ul>
-          </section>
+          </section> */}
 
           {/* List of Applied Jobs*/}
           <section className="acceptedOffers">
