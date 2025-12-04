@@ -29,6 +29,14 @@ export default function ApplicantHome() {
     Array<{ JobID: number; JobTitle: string; CompanyName: string; ApplicationStatus: string }>
   >([]);
 
+  const [acceptedJobsOffers, setAcceptedJobsOffers] = useState<
+    Array<{ JobID: number; JobTitle: string; CompanyName: string; ApplicationStatus: string }>
+  >([]);
+
+  const [deniedJobsOffers, setDeniedJobsOffers] = useState<
+    Array<{ JobID: number; JobTitle: string; CompanyName: string; ApplicationStatus: string }>
+  >([]);
+
   const WITHDRAW_API_URL = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/withdrawlApplication";
 
    useEffect(() => {
