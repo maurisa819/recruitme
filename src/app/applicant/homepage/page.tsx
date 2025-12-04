@@ -26,18 +26,24 @@ export default function ApplicantHome() {
   >([]);
 
   const [jobsOffers, setJobsOffers] = useState<
-    Array<{ JobID: number; JobTitle: string; CompanyName: string; ApplicationStatus: string }>
-  >([]);
+  Array<{ApplicationID: number; JobID: number; JobTitle: string; CompanyName: string; Status: string;}>
+>([]);
 
-  const [acceptedJobsOffers, setAcceptedJobsOffers] = useState<
-    Array<{ JobID: number; JobTitle: string; CompanyName: string; ApplicationStatus: string }>
-  >([]);
+const [acceptedJobsOffers, setAcceptedJobsOffers] = useState<
+  Array<{ApplicationID: number;JobID: number; JobTitle: string; CompanyName: string; Status: string;}>
+>([]);
 
-  const [deniedJobsOffers, setDeniedJobsOffers] = useState<
-    Array<{ JobID: number; JobTitle: string; CompanyName: string; ApplicationStatus: string }>
-  >([]);
+const [deniedJobsOffers, setDeniedJobsOffers] = useState<
+  Array<{ApplicationID: number; JobID: number; JobTitle: string; CompanyName: string; Status: string;}>
+>([]);
 
   const WITHDRAW_API_URL = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/withdrawlApplication";
+  const ACCEPT_OFFER_API_URL = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/acceptJob";
+  const REJECT_OFFER_API_URL = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/rejectJob";
+  const ACCEPTED_JOBS_API_URL = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/getAcceptedJobs";
+  const REJECTED_JOBS_API_URL = "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/getRejectedJob";
+
+
 
    useEffect(() => {
     const id = localStorage.getItem("userId");
@@ -78,6 +84,7 @@ export default function ApplicantHome() {
       })
       .catch((err) => console.error("Error fetching applied jobs:", err));
 
+    // finding the job offers for the applicant
     fetch ( `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/applicantJobOffers?applicantID=${applicantID}`)  
     .then((res) => res.json())
     .then((data) => {
@@ -118,16 +125,54 @@ export default function ApplicantHome() {
     }
   };
 
+  const refreshAccepted = async () => {
+  try {
+    const res = await fetch(
+      `${ACCEPTED_JOBS_API_URL}?applicantID=${applicantID}`
+    );
+    const data = await res.json();
+    setAcceptedJobsOffers(data);
+    console.log("Accepted jobs:", data);
+  } catch (err) {
+    console.error("Error fetching accepted jobs:", err);
+  }
+};
+
+const refreshRejected = async () => {
+  try {
+    const res = await fetch(
+      `${REJECTED_JOBS_API_URL}?applicantID=${applicantID}`
+    );
+    const data = await res.json();
+    setDeniedJobsOffers(data);
+    console.log("Rejected jobs:", data);
+  } catch (err) {
+    console.error("Error fetching rejected jobs:", err);
+  }
+};
+
+const refreshJobOffers = async () => {
+  if (!applicantID) return;
+  try {
+    const res = await fetch(`https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/applicantJobOffers?applicantID=${applicantID}`);
+    const data = await res.json();
+    setJobsOffers(data);
+  } catch (err) {
+    console.error("Error fetching job offers:", err);
+  }
+};
+
+
 
   // runs the post request to accept an offer 
-  const acceptOffer = async (jobID: number) => {
+  const acceptOffer = async (applicationId: number, jobId: number) => {
 
     try {
       const response = await axios.post(
-        WITHDRAW_API_URL,
+        ACCEPT_OFFER_API_URL,
         {
-          applicantID: applicantID,
-          jobID: jobID
+          applicationId: applicationId,
+          jobId: jobId
         },
         {
           headers: {
@@ -135,31 +180,24 @@ export default function ApplicantHome() {
           },
         }
       );
-      // need to make a new get request for the offers
-      // copied the previous fetch to referesh after deletion
-    //   fetch(
-    //   `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/getJobApplied?applicantID=${applicantID}`
-    // )
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setJobsApplied(data);
-    //     console.log("Jobs applied to data:", data);
-    //   })
-    //   .catch((err) => console.error("Error fetching applied jobs:", err));
+      await refreshAccepted();
+      await refreshRejected();
+      await refreshJobOffers();
+
     } catch (error: any) {
       console.error("Error accepting offer:", error);
     }
   };
 
   // runs the post request to reject an offer 
-  const rejectOffer = async (jobID: number) => {
+  const rejectOffer = async (applicationId: number, jobId: number) => {
 
     try {
       const response = await axios.post(
-        WITHDRAW_API_URL,
+        REJECT_OFFER_API_URL,
         {
-          applicantID: applicantID,
-          jobID: jobID
+        applicationId: applicationId, 
+        jobId: jobId
         },
         {
           headers: {
@@ -169,15 +207,10 @@ export default function ApplicantHome() {
       );
       // need to make a new get request for the offers
       // copied the previous fetch to referesh after deletion
-    //   fetch(
-    //   `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/getJobApplied?applicantID=${applicantID}`
-    // )
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setJobsApplied(data);
-    //     console.log("Jobs applied to data:", data);
-    //   })
-    //   .catch((err) => console.error("Error fetching applied jobs:", err));
+      await refreshAccepted();
+      await refreshRejected();
+      await refreshJobOffers();
+
     } catch (error: any) {
       console.error("Error accepting offer:", error);
     }
@@ -236,7 +269,7 @@ export default function ApplicantHome() {
                         cursor: "pointer",
                       }}
                       // need to actually implement accept offer function
-                      onClick={() => acceptOffer(job.JobID)}
+                      onClick={() => acceptOffer(job.ApplicationID, job.JobID)}
                     >
                       Accept
                     </button>
@@ -250,7 +283,7 @@ export default function ApplicantHome() {
                         cursor: "pointer",
                       }}
                       // need to actually implement reject offer function
-                      onClick={() => rejectOffer(job.JobID)}
+                      onClick={() => rejectOffer(job.ApplicationID, job.JobID)}
                     >
                       Reject
                     </button>
@@ -266,11 +299,16 @@ export default function ApplicantHome() {
           <section className="acceptedOffers">
             <h2>Accepted Offers</h2>
             <ul>
-              <li className="acceptedOfferCard">
-                <h3>UI Designer</h3>
-                <p><strong>Company:</strong> Canonical</p>
-              </li>
-
+              {acceptedJobsOffers.length > 0 ? (
+                acceptedJobsOffers.map((job, index) => (
+                  <li key={index} className="acceptedOfferCard">
+                    <h3>{job.JobTitle}</h3>
+                    <p><strong>Company:</strong> {job.CompanyName}</p>
+                  </li>
+                ))
+              ) : (
+                <li>No accepted jobs.</li>
+              )}
             </ul>
           </section>
 
@@ -278,12 +316,17 @@ export default function ApplicantHome() {
           <section className="acceptedOffers">
             <h2>Rejected Offers</h2>
             <ul>
-              <li className="acceptedOfferCard">
-                <h3>ELDP Program</h3>
-                <p><strong>Company:</strong> BAE Systems</p>
-              </li>
-
-            </ul>
+               {(deniedJobsOffers && deniedJobsOffers.length > 0) ? (
+              deniedJobsOffers.map((job, index) => (
+                <li key={index} className="acceptedOfferCard">
+                  <h3>{job.JobTitle}</h3>
+                  <p><strong>Company:</strong> {job.CompanyName}</p>
+                </li>
+              ))
+            ) : (
+              <li>No rejected jobs.</li>
+            )}
+          </ul>
           </section>
 
           {/* List of Applied Jobs*/}
