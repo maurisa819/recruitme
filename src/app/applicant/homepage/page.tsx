@@ -116,7 +116,7 @@ const [deniedJobsOffers, setDeniedJobsOffers] = useState<JobOffer[]>([]);
       );
       // copied the previous fetch to referesh after deletion
       fetch(
-      `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/getJobApplied?applicationId=${applicantID}`
+      `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/applicant/getJobApplied?applicantID=${applicantID}`
     )
       .then((res) => res.json())
       .then((data) => {
