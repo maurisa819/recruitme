@@ -10,45 +10,33 @@ import Typography from "@mui/material/Typography";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-export default function ReportJobsForCompany() {
+export default function ReportCompanies() {
   const router = useRouter();
 
-  const goToCompanyHome = () => router.push("/company/home");
+  const goToAdminHome = () => router.push("/admin/home");
   const goToLogin = () => router.push("/company/login");
-  const reportCompanies = () => router.push("/admin/reportCompanies");
 
   const logout = () => {
     localStorage.removeItem("adminUser");
     goToLogin();
   };
 
-  const [jobs, setJobs] = useState([]);
-  const [companyName, setCompanyName] = useState("");
+  const [applicants, setApplicants] = useState([]);
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
 
   useEffect(() => {
-    const companyID = localStorage.getItem("companyReportID");
-
-    if (!companyID) {
-      alert("No company selected.");
-      return;
-    }
-
-    const url = `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/Admin/reportJobsForCompany?companyID=${companyID}&page=${page}&pageSize=10`;
-
+    console.log("Fetching applicants for page:", page);
+    const url = `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/Admin/reportApplicants?page=${page}&pageSize=10`;
     axios
       .get(url)
-      .then((response) => {
-        const data = response.data.body
-          ? JSON.parse(response.data.body)
-          : response.data;
-
-        setCompanyName(data.companyName);
-        setJobs(data.jobs);
+      .then((res) => {
+        const data = res.data.body ? JSON.parse(res.data.body) : res.data;
+        console.log(data);
+        setApplicants(data);
       })
       .catch(() => {
-        alert("Unable to load job report");
+        alert("Unable to load company report");
         setPage(lastPage);
       });
   }, [page]);
@@ -71,48 +59,46 @@ export default function ReportJobsForCompany() {
           className="ribbonImages"
           src="/recruitme.png"
           alt="RecruitMe Logo"
-          onClick={goToCompanyHome}
+          onClick={goToAdminHome}
         />
+
+      <button className="ribbonButton" onClick={(e) => logout()}>Logout</button>
 
         <div className="ribbon-icons">
           <img
             className="icon-button"
             src="/home.png"
             alt="Home"
-            onClick={goToCompanyHome}
+            onClick={goToAdminHome}
           />
         </div>
       </div>
 
       <div className="content">
         <h1 className="pageHeading" style={{ textAlign: "center" }}>
-          Jobs Report for {companyName}
+          Applicant Report
         </h1>
 
         <div className="jobs-box">
-          <h2 style={{ textAlign: "center" }}>All Job Postings</h2>
+          <h2 style={{ textAlign: "center" }}>All Applicants Summary</h2>
 
           <table className="jobs-table">
             <thead>
               <tr>
-                <th>Job Title</th>
-                <th>Status</th>
-                <th># Applicants</th>
-                <th># Hired</th>
-                <th># Offered</th>
-                <th># Withdrawn</th>
+                <th>Applicant Name</th>
+                <th># Jobs Applied</th>
+                <th># Jobs Accepted</th>
+                <th># Jobs withdrawn</th>
               </tr>
             </thead>
 
             <tbody>
-              {jobs.map((j: any, i: number) => (
+              {applicants.map((c: any, i: number) => (
                 <tr key={i}>
-                  <td>{j.JobTitle}</td>
-                  <td>{j.Status}</td>
-                  <td>{j.numApplicant}</td>
-                  <td>{j.numHired}</td>
-                  <td>{j.numOffered}</td>
-                  <td>{j.numWithdrawn}</td>
+                  <td>{c.ApplicantName}</td>
+                  <td>{c.NumApplied}</td>
+                  <td>{c.NumAccepted}</td>
+                  <td>{c.NumWithdrawn}</td>
                 </tr>
               ))}
             </tbody>
@@ -138,13 +124,6 @@ export default function ReportJobsForCompany() {
           <ArrowForwardIosIcon sx={{ color: "rgb(82, 140, 121)" }} />
         </IconButton>
       </Box>
-
-      <div className="admin-content" style={{ textAlign: "center" }}>
-        <button className="bigButton" onClick={reportCompanies}>
-          {" "}
-          Report Companies{" "}
-        </button>
-      </div>
 
       {/* Logout */}
       <div style={{ marginTop: "20px", textAlign: "center" }}>
