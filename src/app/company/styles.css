@@ -25,6 +25,7 @@
     height: 35px;
     width: 35px;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 /* Page Content */
@@ -60,6 +61,21 @@
     margin: 10px;
     width: 250px;
 }
+
+.companyButton {
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 12px;
+}
+
+.applicantFont {
+    font-weight: 600;
+    font-size: 16px;
+    margin-right: 10px
+}
+
+
 
 /* Jobs Container */
 .jobs-container {

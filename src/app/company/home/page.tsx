@@ -65,7 +65,6 @@ export default function CompanyHome() {
   function activateJob(jID: string) {
     for (let i = 0; i < closedJobs.length; i++) {
       if (closedJobs[i].id === jID) {
-        
         // Activate the job
         console.log("Activating job with ID:", jID);
         axios
@@ -234,12 +233,19 @@ export default function CompanyHome() {
                 <tr key={i}>
                   <td>{job.title}</td>
                   <td onClick={(e) => closeJob(job.id)}>
-                    <button>Close</button>
+                    <button
+                      className="companyButton"
+                      style={{ backgroundColor: "rgb(82, 140, 121)" }}
+                    >
+                      Close
+                    </button>
                   </td>
                   <td>{job.status}</td>
                   <td>{job.applicants || 0}</td>
                   <td>
                     <button
+                      className="companyButton"
+                      style={{ backgroundColor: "rgb(82, 140, 121)" }}
                       onClick={() => {
                         localStorage.setItem("jobID", job.id);
                         localStorage.setItem("jobTitle", job.title);
@@ -274,6 +280,8 @@ export default function CompanyHome() {
                   <td>{job.hired || 0}</td>
                   <td>
                     <button
+                      className="companyButton"
+                      style={{ backgroundColor: "rgb(82, 140, 121)" }}
                       onClick={() => {
                         localStorage.setItem("jobID", job.id); // assuming job.id exists
                         goToEditJob();
@@ -283,7 +291,12 @@ export default function CompanyHome() {
                     </button>
                   </td>
                   <td onClick={(e) => activateJob(job.id)}>
-                    <button>Reopen</button>
+                    <button
+                      className="companyButton"
+                      style={{ backgroundColor: "rgb(82, 140, 121)" }}
+                    >
+                      Reopen
+                    </button>
                   </td>
                 </tr>
               ))}
