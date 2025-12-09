@@ -294,7 +294,7 @@ const applyJob = async (jobId: number) => {
           <Box>
       <button
         style={{
-          backgroundColor: "#1976d2",
+          backgroundColor: "blue",
           color: "white",
           border: "none",
           padding: "8px 16px",

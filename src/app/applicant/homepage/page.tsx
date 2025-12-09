@@ -258,7 +258,7 @@ const [deniedJobsOffers, setDeniedJobsOffers] = useState<JobOffer[]>([]);
                     </p>
                     <button
                       style={{
-                        backgroundColor: "#1976d2",
+                        backgroundColor: "green",
                         color: "white",
                         border: "none",
                         padding: "8px 16px",
@@ -272,7 +272,7 @@ const [deniedJobsOffers, setDeniedJobsOffers] = useState<JobOffer[]>([]);
                     </button>
                     <button
                       style={{
-                        backgroundColor: "#1976d2",
+                        backgroundColor: "red",
                         color: "white",
                         border: "none",
                         padding: "8px 16px",
@@ -339,7 +339,7 @@ const [deniedJobsOffers, setDeniedJobsOffers] = useState<JobOffer[]>([]);
                     </p>
                     <button
                       style={{
-                        backgroundColor: "#1976d2",
+                        backgroundColor: "blue",
                         color: "white",
                         border: "none",
                         padding: "8px 16px",
