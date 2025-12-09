@@ -17,7 +17,7 @@ export default function ReportCompanies() {
   const goToLogin = () => router.push("/company/login");
 
   const logout = () => {
-    localStorage.removeItem("companyID");
+    localStorage.removeItem("adminUser");
     goToLogin();
   };
 
