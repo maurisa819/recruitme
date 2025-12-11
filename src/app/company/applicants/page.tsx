@@ -16,9 +16,9 @@ import axios from "axios";
 export default function ReviewApplicants() {
   const router = useRouter();
 
-  const [page, setPage] = useState(1)
-  const [lastPage, setLastPage] = useState(1)
-  
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+
   const goToCompanyHome = () => router.push("/company/home");
   const goToReviewProfile = () => router.push("/company/review");
   const goToLogin = () => router.push("/company/login");
@@ -42,7 +42,6 @@ export default function ReviewApplicants() {
     setJobTitle(storedjobTitle ?? "");
     setJobID(storedjobId ?? "");
 
-    
     const url = `https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/reviewApplicantsForJob?jobId=${storedjobId}&page=${page}&pageSize=10`;
 
     axios
@@ -64,11 +63,11 @@ export default function ReviewApplicants() {
   const handleNext = () => {
     setLastPage(page);
     setPage((prev) => prev + 1);
-  }
-  const handlePrev = () =>{
+  };
+  const handlePrev = () => {
     setLastPage(page);
     setPage((prev) => (prev > 1 ? prev - 1 : prev));
-  }
+  };
 
   // Offer job
   function offerJob(applicant: any) {
@@ -222,16 +221,23 @@ export default function ReviewApplicants() {
                     {applicant.ApplicationStatus === "Pending" &&
                       !applicant.Rating && <>Please rate applicant</>}
 
-                    {applicant.Rating === "Unacceptable" && <>Denied</>}
+                    {applicant.Rating === "Unacceptable" && (
+                      <span className="applicantFont" style={{ color: "red" }}>
+                        Denied
+                      </span>
+                    )}
 
                     {applicant.Rating === "Wait" && (
-                      <>Please update rating to Hirable to offer job</>
+                      <span className="applicantFont">
+                        Please update rating to Hirable to offer job
+                      </span>
                     )}
 
                     {applicant.Rating === "Hirable" &&
                       applicant.ApplicationStatus === "Pending" && (
                         <>
                           <button
+                            className="companyButton"
                             style={{ backgroundColor: "green" }}
                             onClick={() => offerJob(applicant)}
                           >
@@ -242,8 +248,14 @@ export default function ReviewApplicants() {
 
                     {applicant.ApplicationStatus === "Offered" && (
                       <>
-                        <span>Job Offered</span>
+                        <span
+                          className="applicantFont"
+                          style={{ color: "rgb(82, 140, 121)" }}
+                        >
+                          Job Offered
+                        </span>
                         <button
+                          className="companyButton"
                           style={{ backgroundColor: "red" }}
                           onClick={() => rescindOffer(applicant)}
                         >
@@ -252,10 +264,16 @@ export default function ReviewApplicants() {
                       </>
                     )}
 
-                    {applicant.ApplicationStatus === "Hired" && (
+                    {applicant.ApplicationStatus === "Accepted" && (
                       <>
-                        <span>Hired</span>
+                        <span
+                          className="applicantFont"
+                          style={{ color: "green" }}
+                        >
+                          Hired !
+                        </span>
                         <button
+                          className="companyButton"
                           style={{ backgroundColor: "red" }}
                           onClick={() => rescindOffer(applicant)}
                         >
@@ -271,17 +289,24 @@ export default function ReviewApplicants() {
         </div>
       </div>
 
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", pb: 10}}>
-          <IconButton onClick={handlePrev}>
-            <ArrowBackIosNewIcon sx={{color: 'rgb(82, 140, 121)' }}/>
-          </IconButton>
-          <Typography variant="body2" sx={{ mx: 2 }}>
-            Page {page}
-          </Typography>
-          <IconButton onClick={handleNext}>
-            <ArrowForwardIosIcon sx={{color: 'rgb(82, 140, 121)' }}/>
-          </IconButton>
-        </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          pb: 10,
+        }}
+      >
+        <IconButton onClick={handlePrev}>
+          <ArrowBackIosNewIcon sx={{ color: "rgb(82, 140, 121)" }} />
+        </IconButton>
+        <Typography variant="body2" sx={{ mx: 2 }}>
+          Page {page}
+        </Typography>
+        <IconButton onClick={handleNext}>
+          <ArrowForwardIosIcon sx={{ color: "rgb(82, 140, 121)" }} />
+        </IconButton>
+      </Box>
     </div>
   );
 }
