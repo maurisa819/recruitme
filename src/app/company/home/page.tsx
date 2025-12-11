@@ -3,10 +3,63 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import SearchIcon from "@mui/icons-material/Search";
+import { styled, alpha } from "@mui/material/styles";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import InputBase from "@mui/material/InputBase";
 import "../styles.css";
+import { Search } from "@mui/icons-material";
+
+
+  const SearchContainer = styled("div")(({ theme }) => ({
+    position: "relative",
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    "&:hover": {
+      backgroundColor: alpha(theme.palette.common.white, 0.25),
+    },
+    marginRight: theme.spacing(2),
+    marginLeft: 0,
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(3),
+      width: "auto",
+    },
+  }));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
+    },
+  },
+}));
+
 
 export default function CompanyHome() {
   const router = useRouter();
+
+  const [searchTerm, setSearchTerm] = useState("")
+
 
   const goToCompanyHome = () => router.push("/company/home");
   const goToReviewProfile = () => router.push("/company/review");
@@ -24,6 +77,8 @@ export default function CompanyHome() {
   const [openJobs, setOpenJobs] = useState(Array<any>);
   const [closedJobs, setClosedJobs] = useState(Array<any>);
   const [redraw, setRedraw] = useState(0);
+  const [matchCount, setMatchCount] = useState<number | null>(null);
+
 
   function forceRedraw() {
     setRedraw(redraw + 1);
@@ -184,6 +239,43 @@ export default function CompanyHome() {
     }
   }
 
+
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(e.target.value);
+    };
+  
+    const handleSearchSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      fetchNumOfApplicants(searchTerm);
+    };
+    async function fetchNumOfApplicants(skills: string) {
+      // Convert comma-separated list → array of trimmed strings
+
+      try{
+        const response = await axios.post(
+          "https://yzcqeylhae.execute-api.us-east-1.amazonaws.com/Initial/company/ReportNumberOfApplicants",
+          {
+            "skills": skills,
+          }
+        );
+        const data = response.data.body
+          ? JSON.parse(response.data.body)
+          : response.data;
+        const number = Array.isArray(data) ? data[0]?.matchCount ?? 0 : 0;
+        console.log(`Matches found: ${number}`);
+        setMatchCount(number)
+
+      }catch(error){
+        console.error("POST error: ", error);
+        console.log("Error fetching applicant count")
+      }
+
+
+
+    }
+
+
   return (
     <div className="company-home">
       <div className="ribbon">
@@ -291,7 +383,45 @@ export default function CompanyHome() {
           </table>
         </div>
       </div>
+      <div>
+      <Box sx={{ flexGrow: 1, mb: 2 , alignItems: 'center', justifyContent:'center'}}>
+        <AppBar position="static">
+          <Toolbar component="form" onSubmit={handleSearchSubmit}  sx={{
+              flexDirection: "row",     
+              alignItems: "center",       
+              justifyContent: "center",
+              textAlign: "center",
+              gap: 1, 
+          }}>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ display: { xs: "none", sm: "block" } }}
+            >
+              Number of Matching Applicants
+            </Typography>
 
+            <SearchContainer>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                value = {searchTerm}
+                onChange={handleSearch}
+                placeholder="Enter Skills"
+                inputProps={{ "aria-label": "search" }}
+              />
+            </SearchContainer>
+          </Toolbar>
+        </AppBar>
+        {matchCount !== null && (
+          <div style={{ textAlign: "center", marginTop: "10px" }}>
+            Found {matchCount} matching applicants.
+          </div>
+        )}
+      </Box>
+      </div>
       <div style={{ marginTop: "20px", textAlign: "center" }}>
         <button className="bigButton" onClick={goToCreateJobs}>
           Create Job
@@ -299,6 +429,7 @@ export default function CompanyHome() {
         <button className="bigButton" onClick={logout}>
           Logout
         </button>
+
       </div>
     </div>
   );
