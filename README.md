@@ -96,6 +96,38 @@ http://recruitme-northcarolina.s3-website-us-east-1.amazonaws.com
     - Find the applicant who was already offered the job
     - Click Rescind in the Decision column
     
+## Completed use cases for iteration 3:
+
+### Once you register/login, you will NEED to click on "Logout" in order to register or login with a different account (will not change on refresh)
+
+- Number of applicants from list of skills (New use case)
+    - On the Company homepage, go to the input box to the right of "Number of Matching Applicants" (In blue bar)
+    - Type in a comma-separated list of skills you'd like to check for and hit enter.
+    - Results should appear below blue bar.
+
+- Admin Report Companies (with pagination)
+    - On the Admin homepage, click "Report Companies."
+    - Report will be shown.
+
+- Admin Report Jobs for Company (with pagination)
+    - On the Admin homepage, click "Report Companies."
+    - Click on the "Jobs" button for desired company.
+    - Report will be shown.
+
+- Admin Report Applicants (with pagination)
+    - On the Admin homepage, click "Report Applicants."
+    - Report will be shown.
+
+- Applicant Accept Offer
+    - On the Applicant homepage, job offers will be shown.
+    - Click "Accept" on a job offer.
+    - Job will appear in "Accepted Offers"
+
+- Applicant Reject Offer
+    - On the Applicant homepage, job offers will be shown.
+    - Click "Reject" on a job offer.
+    - Job will appear in "Rejected Offers"
+
 
 
 
